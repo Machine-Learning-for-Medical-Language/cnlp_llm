@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cnlp_llm"
+version = "0.0.1"
+description = "LLM training and evaluation for clinical NLP"
+readme = "README.md"
+requires-python = "~=3.10"
+dependencies = ["inspect_ai==0.3.18", "openai==1.37.0", "click==8.1.7"]
+
+[project.scripts]
+"cnlp_llm" = "cnlp_llm.cli:cli"
+
+[project.urls]
+Homepage = "https://github.com/ianbulovic/cnlp_llm"
+Issues = "https://github.com/ianbulovic/cnlp_llm/issues"
