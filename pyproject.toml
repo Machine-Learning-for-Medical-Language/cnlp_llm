@@ -14,6 +14,7 @@ dependencies = [
     "click==8.1.7",
     "trl==0.9.6",
     "datasets==2.20.0",
+    "peft==0.12.0",
 ]
 
 [project.scripts]

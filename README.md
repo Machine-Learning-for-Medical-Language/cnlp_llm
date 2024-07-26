@@ -6,9 +6,6 @@ LLMs for Clinical NLP
 
 The goal of this library is to consolidate, extend, and provide helpful wrappers around tools for training and evaluating decoder LLMs for clinical NLP.
 
->[!WARNING]
-Training/fine-tuning are not yet implemented! Stay tuned.
-
 ## Table of Contents
 
 - [cnlp\_llm](#cnlp_llm)
@@ -36,11 +33,11 @@ pip install -e .
 
 ### Pretraining
 
-Coming soon!
+Not yet implemented.
 
 ### Fine-tuning
 
-Coming soon!
+We use [TRL](https://github.com/huggingface/trl/) for fine-tuning. Run `cnlp_llm finetune` for more details.
 
 ## Inference - Chat and Evaluation
 
@@ -53,5 +50,5 @@ To start an interactive chat session with a model, run `cnlp_llm chat`. This wil
 
 ### Evaluation
 
-For evaluation, see the [Inspect documentation](https://inspect.ai-safety-institute.org.uk/workflow.html#eval-basics).
-More details and examples are coming soon!
+For evaluation, cnlp_llm provides an alias to the Inspect CLI via `cnlp_llm evaluation`.
+More details and examples are coming soon! In the meantime, see the [Inspect documentation](https://inspect.ai-safety-institute.org.uk/workflow.html#eval-basics).
