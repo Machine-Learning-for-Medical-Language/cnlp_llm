@@ -13,6 +13,7 @@ dependencies = [
     "openai==1.37.0",
     "click==8.1.7",
     "trl==0.9.6",
+    "datasets==2.20.0",
 ]
 
 [project.scripts]
