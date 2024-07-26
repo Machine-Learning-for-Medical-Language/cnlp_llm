@@ -8,7 +8,12 @@ version = "0.0.1"
 description = "LLM training and evaluation for clinical NLP"
 readme = "README.md"
 requires-python = "~=3.10"
-dependencies = ["inspect_ai==0.3.18", "openai==1.37.0", "click==8.1.7"]
+dependencies = [
+    "inspect_ai==0.3.18",
+    "openai==1.37.0",
+    "click==8.1.7",
+    "trl==0.9.6",
+]
 
 [project.scripts]
 "cnlp_llm" = "cnlp_llm.cli:cli"
