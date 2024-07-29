@@ -8,6 +8,7 @@ from .fine_tune import fine_tune
 
 @click.group()
 def cli():
+    """Chat with, evaluate, and fine-tune LLMs."""
     init_dotenv()
 
 
