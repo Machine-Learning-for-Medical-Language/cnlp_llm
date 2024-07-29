@@ -21,7 +21,14 @@ The goal of this library is to consolidate, extend, and provide helpful wrappers
 
 ## Installation
 
-Clone this repo and install using pip (Python 3.10):
+Optionally create a conda environment:
+
+```sh
+conda create -n cnlp_llm python=3.10
+conda activae cnlp_llm
+```
+
+Clone this repo and install using pip:
 
 ```sh
 git clone https://github.com/ianbulovic/cnlp_llm
