@@ -25,7 +25,7 @@ Optionally create a conda environment:
 
 ```sh
 conda create -n cnlp_llm python=3.10
-conda activae cnlp_llm
+conda activate cnlp_llm
 ```
 
 Clone this repo and install using pip:
