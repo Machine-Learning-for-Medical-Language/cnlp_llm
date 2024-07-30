@@ -18,7 +18,7 @@ dependencies = [
 ]
 
 [project.scripts]
-"cnlp_llm" = "cnlp_llm.cli:cli"
+"cnlp_llm" = "cnlp_llm.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/ianbulovic/cnlp_llm"
