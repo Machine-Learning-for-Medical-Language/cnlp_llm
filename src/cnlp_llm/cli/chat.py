@@ -6,6 +6,7 @@ import os
 import click
 from rich.console import Console
 from inspect_ai.model import ChatMessage, ChatMessageUser, GenerateConfig, get_model
+from inspect_ai._cli.util import parse_cli_args
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +75,13 @@ def _logger_init():
     type=float,
     help="What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.",
 )
+@click.option(
+    "-M",
+    multiple=True,
+    type=str,
+    envvar=["INSPECT_EVAL_MODEL_ARGS"],
+    help="One or more native model arguments (e.g. -M arg=value)",
+)
 def chat(
     model_name: str,
     model_base_url: str | None,
@@ -81,6 +89,7 @@ def chat(
     system_message: str | None = None,
     max_tokens: int | None = None,
     temperature: float | None = None,
+    m: tuple[str] | None = None,
 ):
     """Start an interactive chat session with a model."""
 
@@ -91,8 +100,14 @@ def chat(
         system_message=system_message, max_tokens=max_tokens, temperature=temperature
     )
 
+    model_args = parse_cli_args(m)
+
     model = get_model(
-        model=model_name, base_url=model_base_url, api_key=api_key, config=config
+        model=model_name,
+        base_url=model_base_url,
+        api_key=api_key,
+        config=config,
+        **model_args,
     )
 
     logger.info(f"Chatting with {model_name}")
