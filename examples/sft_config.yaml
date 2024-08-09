@@ -1,9 +1,0 @@
-model_name_or_path: openai-community/gpt2
-dataset_name: tiny_shakespeare
-dataset_text_field: text
-report_to: none
-learning_rate: 0.0001
-lr_scheduler_type: cosine
-use_peft: true
-output_dir: output
-num_train_epochs: 20

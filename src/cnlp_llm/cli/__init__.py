@@ -3,10 +3,13 @@ import click
 from .chat import chat
 from .fine_tune import fine_tune
 
+from inspect_ai._util.dotenv import init_dotenv
+
 
 @click.group()
 def cli():
     """Chat with, evaluate, and fine-tune LLMs."""
+    init_dotenv()
     pass
 
 

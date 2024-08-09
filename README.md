@@ -44,18 +44,14 @@ Not yet implemented.
 
 ### Fine-tuning
 
-We use [TRL](https://github.com/huggingface/trl/) for fine-tuning. Run `cnlp_llm finetune` for more details.
+We use [TRL](https://github.com/huggingface/trl/) for fine-tuning. Refer to the [examples](examples/finetune) or run `cnlp_llm finetune` for more details.
 
 ## Inference - Chat and Evaluation
 
-> [!TIP]
-Many inference parameters can be automatically loaded from a `.env` file in your working directory. See the [example `.env` file](.env.example) for an example with links to the Inspect documentation on relevant environment variables.
-
 ### Simple Chat REPL
 
-To start an interactive chat session with a model, run `cnlp_llm chat`. This will use the model specified by the environment variable `INSPECT_EVAL_MODEL`, or you can specify a [model name](https://inspect.ai-safety-institute.org.uk/models.html#using-models) via the `--model` flag.
+To start an interactive chat session with a model, run `cnlp_llm chat`. See the [examples](examples/chat) for more info.
 
 ### Evaluation
 
-For evaluation, cnlp_llm provides an alias to the Inspect CLI via `cnlp_llm evaluation`.
-More details and examples are coming soon! In the meantime, see the [Inspect documentation](https://inspect.ai-safety-institute.org.uk/workflow.html#eval-basics).
+For evaluation, we use [Inspect](https://inspect.ai-safety-institute.org.uk/). For more details, see the [examples](examples/eval) or the [Inspect documentation](https://inspect.ai-safety-institute.org.uk/workflow.html#eval-basics).

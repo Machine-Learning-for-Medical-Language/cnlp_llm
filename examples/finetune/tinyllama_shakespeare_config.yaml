@@ -1,0 +1,11 @@
+model_name_or_path: TinyLlama/TinyLlama-1.1B-Chat-v1.0
+dataset_name: tiny_shakespeare
+dataset_text_field: text
+report_to: none
+learning_rate: 0.001
+lr_scheduler_type: cosine
+use_peft: true
+output_dir: output
+lora_target_modules: all-linear
+load_in_4bit: true
+num_train_epochs: 50

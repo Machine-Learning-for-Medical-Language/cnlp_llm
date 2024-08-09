@@ -46,7 +46,7 @@ def _logger_init():
     "--model",
     "model_name",
     type=str,
-    envvar=["CNLP_CHAT_MODEL", "INSPECT_EVAL_MODEL"],
+    envvar=["CNLP_CHAT_MODEL"],
     required=True,
     help="Model used to evaluate tasks. Can also be set via INSPECT_EVAL_MODEL environment variable.",
 )
