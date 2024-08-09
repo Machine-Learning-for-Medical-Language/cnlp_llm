@@ -31,7 +31,7 @@ conda activate cnlp_llm
 Clone this repo and install using pip:
 
 ```sh
-git clone https://github.com/ianbulovic/cnlp_llm
+git clone https://github.com/Machine-Learning-for-Medical-Language/cnlp_llm.git
 cd cnlp_llm
 pip install -e .
 ```

@@ -21,5 +21,5 @@ dependencies = [
 "cnlp_llm" = "cnlp_llm.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/ianbulovic/cnlp_llm"
-Issues = "https://github.com/ianbulovic/cnlp_llm/issues"
+Homepage = "https://github.com/Machine-Learning-for-Medical-Language/cnlp_llm"
+Issues = "https://github.com/Machine-Learning-for-Medical-Language/cnlp_llm/issues"
