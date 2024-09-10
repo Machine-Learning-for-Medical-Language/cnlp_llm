@@ -4,18 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cnlp_llm"
-version = "0.0.1"
+version = "0.0.2"
 description = "LLM training and evaluation for clinical NLP"
 readme = "README.md"
 requires-python = "~=3.10"
-dependencies = [
-    "inspect_ai~=0.3",
-    "openai~=1.37",
-    "click~=8.1",
-    "trl~=0.9",
-    "datasets~=2.20",
-    "peft~=0.12",
-]
+dependencies = ["inspect_ai~=0.3", "openai~=1.44", "click~=8.1", "trl~=0.10"]
 
 [project.scripts]
 "cnlp_llm" = "cnlp_llm.cli:main"
