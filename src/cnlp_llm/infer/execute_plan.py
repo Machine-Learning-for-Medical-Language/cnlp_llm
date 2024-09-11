@@ -23,29 +23,42 @@ T = TypeVar("T")
 def execute_plan(
     data: Dataset | list[Sample] | list[str],
     plan: list[Solver],
-    model: str | Model | None = None,
-    postprocess: None = ...,
-    initialize_dotenv: bool = True,
-) -> list[None]: ...
+    *,
+    model: str | Model | None = ...,
+    initialize_dotenv: bool = ...,
+) -> None: ...
 
 
 @overload
 def execute_plan(
     data: Dataset | list[Sample] | list[str],
     plan: list[Solver],
-    model: str | Model | None = None,
-    postprocess: Callable[[TaskState], Awaitable[T]] = ...,  # type: ignore
-    initialize_dotenv: bool = True,
+    *,
+    postprocess: Literal[None],
+    model: str | Model | None = ...,
+    initialize_dotenv: bool = ...,
+) -> None: ...
+
+
+@overload
+def execute_plan(
+    data: Dataset | list[Sample] | list[str],
+    plan: list[Solver],
+    *,
+    postprocess: Callable[[TaskState], Awaitable[T]],
+    model: str | Model | None = ...,
+    initialize_dotenv: bool = ...,
 ) -> list[T]: ...
 
 
 def execute_plan(
     data: Dataset | list[Sample] | list[str],
     plan: list[Solver],
-    model: str | Model | None = None,
+    *,
     postprocess: Callable[[TaskState], Awaitable[T]] | None = None,
+    model: str | Model | None = None,
     initialize_dotenv: bool = True,
-) -> list[T] | list[None]:
+) -> list[T] | None:
     if len(data) == 0:
         raise ValueError("Data must not be empty.")
 
@@ -99,4 +112,8 @@ def execute_plan(
     async def execute_plan_async():
         return await asyncio.gather(*map(execute_sample_async, task_states))
 
-    return cast(list[T] | list[None], asyncio.run(execute_plan_async()))
+    result = asyncio.run(execute_plan_async())
+    if postprocess is not None:
+        return cast(list[T], result)
+    else:
+        return None
