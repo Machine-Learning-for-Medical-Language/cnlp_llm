@@ -4,7 +4,7 @@ from typing import Awaitable, Callable, Literal, TypeVar, cast, overload
 from inspect_ai._eval.task.generate import task_generate as _task_generate
 from inspect_ai._eval.task.run import resolve_dataset
 from inspect_ai._util.dotenv import init_dotenv
-from inspect_ai.dataset import Dataset
+from inspect_ai.dataset import Dataset, MemoryDataset, Sample
 from inspect_ai.model import (
     CachePolicy,
     GenerateConfig,
@@ -21,7 +21,7 @@ T = TypeVar("T")
 
 @overload
 def execute_plan(
-    dataset: Dataset,
+    data: Dataset | list[Sample] | list[str],
     plan: list[Solver],
     model: str | Model | None = None,
     postprocess: None = ...,
@@ -31,7 +31,7 @@ def execute_plan(
 
 @overload
 def execute_plan(
-    dataset: Dataset,
+    data: Dataset | list[Sample] | list[str],
     plan: list[Solver],
     model: str | Model | None = None,
     postprocess: Callable[[TaskState], Awaitable[T]] = ...,  # type: ignore
@@ -40,15 +40,28 @@ def execute_plan(
 
 
 def execute_plan(
-    dataset: Dataset,
+    data: Dataset | list[Sample] | list[str],
     plan: list[Solver],
     model: str | Model | None = None,
     postprocess: Callable[[TaskState], Awaitable[T]] | None = None,
     initialize_dotenv: bool = True,
 ) -> list[T] | list[None]:
+    if len(data) == 0:
+        raise ValueError("Data must not be empty.")
+
     if initialize_dotenv:
         init_dotenv()
     model = get_model()
+
+    match data:
+        case Dataset():
+            dataset = data
+        case [str(), *_]:
+            dataset = MemoryDataset(samples=[Sample(input=x) for x in data])
+        case [Sample(), *_]:
+            dataset = MemoryDataset(samples=data)
+        case _:
+            raise ValueError(f"Invalid data type: {type(data)}")
 
     dataset, samples, task_states = asyncio.run(
         resolve_dataset(
