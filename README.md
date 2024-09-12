@@ -15,9 +15,10 @@ The goal of this library is to consolidate, extend, and provide helpful wrappers
   - [Training](#training)
     - [Pretraining](#pretraining)
     - [Fine-tuning](#fine-tuning)
-  - [Inference - Chat and Evaluation](#inference---chat-and-evaluation)
+  - [Chat, Evaluation, and Inference Pipelines](#chat-evaluation-and-inference-pipelines)
     - [Simple Chat REPL](#simple-chat-repl)
     - [Evaluation](#evaluation)
+    - [Inference Pipelines](#inference-pipelines)
 
 ## Installation
 
@@ -46,7 +47,7 @@ Not yet implemented.
 
 We use [TRL](https://github.com/huggingface/trl/) for fine-tuning. Refer to the [examples](examples/finetune) or run `cnlp_llm finetune` for more details.
 
-## Inference - Chat and Evaluation
+## Chat, Evaluation, and Inference Pipelines
 
 ### Simple Chat REPL
 
@@ -55,3 +56,7 @@ To start an interactive chat session with a model, run `cnlp_llm chat`. See the 
 ### Evaluation
 
 For evaluation, we use [Inspect](https://inspect.ai-safety-institute.org.uk/). For more details, see the [examples](examples/eval) or the [Inspect documentation](https://inspect.ai-safety-institute.org.uk/workflow.html#eval-basics).
+
+### Inference Pipelines
+
+We leverage some of the powerful abstractions that [Inspect](https://inspect.ai-safety-institute.org.uk/) provides for evaluation to support implementation of inference pipelines. See the [examples](examples/infer) for more info.
