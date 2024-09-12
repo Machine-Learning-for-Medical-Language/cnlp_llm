@@ -1,9 +1,9 @@
 import click
+from inspect_ai._util.dotenv import init_dotenv
 
 from .chat import chat
 from .fine_tune import fine_tune
-
-from inspect_ai._util.dotenv import init_dotenv
+from .serve import serve
 
 
 @click.group()
@@ -22,6 +22,7 @@ def eval():
 
 
 cli.add_command(chat)
+cli.add_command(serve)
 cli.add_command(fine_tune)
 
 
