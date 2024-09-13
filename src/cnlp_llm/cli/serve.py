@@ -22,7 +22,7 @@ from ..pipeline.servable import ServablePipelineFactory, __servable_pipelines__
     "-p", "--port", help="port number", type=int, default=8000, show_default=True
 )
 def serve(pipeline_path: str, host: str, port: int):
-    "Start a FastAPI server to serve a Pipeline. PIPELINE_PATH is a path to a function that returns a Pipeline and is decorated with @servable. e.g., examples/infer/pirate.py@pirate_pipeline"
+    "Start a FastAPI server to serve a Pipeline. PIPELINE_PATH is a path to a function that returns a Pipeline and is decorated with @servable. e.g., examples/infer/pirate.py@get_pipeline"
 
     # parse the input path
     if "@" in pipeline_path:
