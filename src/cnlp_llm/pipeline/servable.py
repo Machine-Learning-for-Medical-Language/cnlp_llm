@@ -1,9 +1,11 @@
-import sys
 from functools import partial, wraps
+from pathlib import Path
 from typing import Callable, cast, overload
 
 import uvicorn
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
 
 from cnlp_llm.pipeline.pipeline import Pipeline
 
@@ -17,6 +19,8 @@ ServablePipelineFactory = Callable[[], ServablePipeline]
 ServableDecorator = Callable[[StrPipelineFactory], ServablePipelineFactory]
 
 __servable_pipelines__: dict[str, list[ServablePipelineFactory]] = {}
+
+static_path = Path(__file__).parent.resolve().joinpath("static")
 
 
 @overload
@@ -48,10 +52,22 @@ def servable(
         def serve(host: str = "localhost", port: int = 8000):
             app = FastAPI(title=pipeline.name, root_path=root_path)
 
+            app.mount(
+                "/static", StaticFiles(directory=static_path, html=True), name="static"
+            )
+
+            @app.get("/")
+            def get_html():
+                return RedirectResponse("/static")
+
             @app.post("/")
             def process(input: list[str]):
                 # TODO: we can probably use pipeline.call_async here instead?
                 return {"response": pipeline(input, log_dir=log_dir)}
+
+            @app.get("/name")
+            def get_name():
+                return {"name": pipeline.name}
 
             uvicorn.run(app, host=host, port=port)
 
