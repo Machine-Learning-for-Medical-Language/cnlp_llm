@@ -79,7 +79,7 @@ def _logger_init():
     "-M",
     multiple=True,
     type=str,
-    envvar=["INSPECT_EVAL_MODEL_ARGS"],
+    envvar=["CNLP_CHAT_MODEL_ARGS"],
     help="One or more native model arguments (e.g. -M arg=value)",
 )
 def chat(

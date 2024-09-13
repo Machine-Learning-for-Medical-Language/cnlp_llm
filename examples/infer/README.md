@@ -15,3 +15,5 @@ curl -X POST -H 'Content-Type: application/json' -d '["Hello, who are you?"]' ht
 ```
 
 You can also point your web browser at [localhost:8000](http://localhost:8000) for a simple web interface to send strings of text to your pipeline.
+
+You can pass pipeline arguments with `-P`, for example: `cnlp_llm serve examples/infer/pirate.py -P pirate_name='Jack Sparrow'`
