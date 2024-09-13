@@ -13,3 +13,5 @@ To start the server for the pirate example, run `cnlp_llm serve examples/infer/p
 ```bash
 curl -X POST -H 'Content-Type: application/json' -d '["Hello, who are you?"]' http://localhost:8000
 ```
+
+You can also point your web browser at [localhost:8000](http://localhost:8000) for a simple web interface to send strings of text to your pipeline.
