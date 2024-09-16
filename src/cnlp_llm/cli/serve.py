@@ -29,6 +29,7 @@ from ..pipeline.servable import ServablePipeline, __servable_pipelines__
     default="",
     show_default=True,
 )
+@click.option("--log-dir", type=str, envvar=["CNLP_PIPELINE_LOG_DIR"])
 @click.option(
     "-m",
     "--model",
@@ -56,6 +57,7 @@ def serve(
     host: str,
     port: int,
     root: str,
+    log_dir: str,
     model_name: str | None = None,
     m: tuple[str] | None = None,
     p: tuple[str] | None = None,
@@ -95,5 +97,10 @@ def serve(
     pipeline_args = parse_cli_args(p)
 
     pipeline_fn(**pipeline_args).serve(
-        host=host, port=port, root_path=root, model=model_name, model_args=model_args
+        host=host,
+        port=port,
+        root_path=root,
+        model=model_name,
+        model_args=model_args,
+        log_dir=log_dir,
     )
