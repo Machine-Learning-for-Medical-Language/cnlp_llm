@@ -4,12 +4,14 @@ from cnlp_llm.pipeline import Pipeline, servable
 from cnlp_llm.pipeline.postprocess import extract_final_output
 
 
-@servable(log_dir="logs/server")
-def get_pipeline():
+@servable
+def get_pipeline(pirate_name: str = "Tensorbeard"):
     return Pipeline(
         name="pirate_assistant",
         plan=[
-            system_message("You are an AI assistant that always speaks like a pirate."),
+            system_message(
+                f"You are an AI assistant named {pirate_name} that always speaks like a pirate."
+            ),
             generate(),
         ],
         postprocess=extract_final_output,
