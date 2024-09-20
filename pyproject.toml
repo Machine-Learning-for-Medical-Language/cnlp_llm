@@ -17,6 +17,9 @@ dependencies = [
     "uvicorn~=0.30",
 ]
 
+[project.optional-dependencies]
+dev = ["pytest"]
+
 [project.scripts]
 "cnlp_llm" = "cnlp_llm.cli:main"
 

@@ -11,7 +11,7 @@ The goal of this library is to consolidate, extend, and provide helpful wrappers
 - [cnlp\_llm](#cnlp_llm)
   - [Introduction](#introduction)
   - [Table of Contents](#table-of-contents)
-  - [Installation](#installation)
+  - [Installation for Development](#installation-for-development)
   - [Training](#training)
     - [Pretraining](#pretraining)
     - [Fine-tuning](#fine-tuning)
@@ -19,8 +19,9 @@ The goal of this library is to consolidate, extend, and provide helpful wrappers
     - [Simple Chat REPL](#simple-chat-repl)
     - [Evaluation](#evaluation)
     - [Inference Pipelines](#inference-pipelines)
+  - [Running Tests](#running-tests)
 
-## Installation
+## Installation for Development
 
 Optionally create a conda environment:
 
@@ -34,7 +35,7 @@ Clone this repo and install using pip:
 ```sh
 git clone https://github.com/Machine-Learning-for-Medical-Language/cnlp_llm.git
 cd cnlp_llm
-pip install -e .
+pip install -e ".[dev]"
 ```
 
 ## Training
@@ -60,3 +61,7 @@ For evaluation, we use [Inspect](https://inspect.ai-safety-institute.org.uk/). F
 ### Inference Pipelines
 
 We leverage some of the powerful abstractions that [Inspect](https://inspect.ai-safety-institute.org.uk/) provides for evaluation to support implementation of inference pipelines. See the [examples](examples/infer) for more info.
+
+## Running Tests
+
+To run the tests, just run `pytest` from the project's base directory.
