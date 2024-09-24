@@ -5,6 +5,7 @@ from typing import Callable, cast
 
 import click
 from inspect_ai._cli.util import parse_cli_args
+from inspect_ai._util.path import chdir_python
 
 from ..pipeline.servable import ServablePipeline, __servable_pipelines__
 
@@ -71,27 +72,30 @@ def serve(
         path = pipeline_path
         fn_name = None
 
-    # load the module spec
-    _, filename = os.path.split(path)
-    spec = spec_from_file_location(filename, path)
-    if spec is None:
-        raise ValueError(f"Failed to load spec for {path}")
-    if spec.loader is None:
-        raise ValueError(f"Loader not available for spec at {path}")
+    path = os.path.abspath(path)
+    dirname, filename = os.path.split(path)
+    with chdir_python(dirname):
 
-    # load the module
-    mod = module_from_spec(spec)
-    sys.modules[filename] = mod
+        # load the module spec
+        spec = spec_from_file_location(filename, path)
+        if spec is None:
+            raise ValueError(f"Failed to load spec for {path}")
+        if spec.loader is None:
+            raise ValueError(f"Loader not available for spec at {path}")
 
-    # execute the module
-    spec.loader.exec_module(mod)
+        # load the module
+        mod = module_from_spec(spec)
+        sys.modules[filename] = mod
 
-    if fn_name is None:
-        if len(__servable_pipelines__) == 0:
-            return ValueError(f"Servable pipeline not found at {pipeline_path}.")
-        pipeline_fn = __servable_pipelines__[filename][0]
-    else:
-        pipeline_fn = cast(Callable[..., ServablePipeline], getattr(mod, fn_name))
+        # execute the module
+        spec.loader.exec_module(mod)
+
+        if fn_name is None:
+            if len(__servable_pipelines__) == 0:
+                return ValueError(f"Servable pipeline not found at {pipeline_path}.")
+            pipeline_fn = __servable_pipelines__[filename][0]
+        else:
+            pipeline_fn = cast(Callable[..., ServablePipeline], getattr(mod, fn_name))
 
     model_args = parse_cli_args(m)
     pipeline_args = parse_cli_args(p)
