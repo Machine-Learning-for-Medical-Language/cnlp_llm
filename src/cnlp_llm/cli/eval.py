@@ -3,7 +3,7 @@ import subprocess
 import click
 
 
-@click.command()
+@click.command(context_settings=dict(ignore_unknown_options=True))
 @click.argument("eval_args", nargs=-1, type=click.UNPROCESSED)
 def eval(eval_args):
     """LLM evaluation."""
