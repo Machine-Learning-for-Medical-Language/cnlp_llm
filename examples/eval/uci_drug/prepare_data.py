@@ -24,9 +24,9 @@ When using this dataset, you agree that you
 """
 
 import sys
-import pandas as pd
 from pathlib import Path
 
+import pandas as pd
 
 TRAIN_FILE = "drugsComTrain_raw.tsv"
 TEST_FILE = "drugsComTest_raw.tsv"

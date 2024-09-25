@@ -1,12 +1,13 @@
 import asyncio
-from datetime import datetime
 import logging
 import os
+from datetime import datetime
 
 import click
-from rich.console import Console
-from inspect_ai.model import ChatMessage, ChatMessageUser, GenerateConfig, get_model
 from inspect_ai._cli.util import parse_cli_args
+from inspect_ai.model import (ChatMessage, ChatMessageUser, GenerateConfig,
+                              get_model)
+from rich.console import Console
 
 logger = logging.getLogger(__name__)
 
