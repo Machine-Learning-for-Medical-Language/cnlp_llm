@@ -1,15 +1,15 @@
 from pathlib import Path
 
 import click
+import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from inspect_ai import eval as task_eval
-from inspect_ai.dataset import Sample, MemoryDataset
 from inspect_ai._cli.util import parse_cli_args
 from inspect_ai._eval.loader import load_task_spec
+from inspect_ai.dataset import MemoryDataset, Sample
 from inspect_ai.model import ModelName
-import uvicorn
 
 
 @click.command()
@@ -70,9 +70,11 @@ def serve(
     model_args = parse_cli_args(m)
     task_args = parse_cli_args(t)
 
-    task = load_task_spec(task_spec, ModelName(model_name or ""), task_args=task_args)[
-        0
-    ]
+    task = load_task_spec(
+        task_spec,
+        ModelName(model_name or ""),
+        task_args=task_args,
+    )[0]
 
     app = FastAPI(title=task.name, root_path=root)
 
@@ -81,8 +83,8 @@ def serve(
 
     @app.post("/evaluate")
     def evaluate(input: list[str]):
-        # TODO: we can maybe use eval_async here instead? Not sure if that's necessary
         task.dataset = MemoryDataset(samples=[Sample(input=x) for x in input])
+        # TODO: we can maybe use eval_async here instead? Not sure if that's necessary
         eval_result = task_eval(
             task,
             model=model_name,

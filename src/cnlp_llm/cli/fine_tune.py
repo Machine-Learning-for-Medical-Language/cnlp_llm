@@ -1,8 +1,8 @@
 import subprocess
 
 import click
-from trl.commands.scripts import sft as trl_sft
 from trl.commands.scripts import dpo as trl_dpo
+from trl.commands.scripts import sft as trl_sft
 
 
 @click.group("finetune")

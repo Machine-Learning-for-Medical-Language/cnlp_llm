@@ -1,11 +1,11 @@
 import subprocess
-import pytest
-from pytest import TempPathFactory
 
+import pytest
 import requests
-from requests.adapters import Retry, HTTPAdapter
-from inspect_ai.solver import prompt_template
 from inspect_ai import Task, task
+from inspect_ai.solver import prompt_template
+from pytest import TempPathFactory
+from requests.adapters import HTTPAdapter, Retry
 
 
 @task
