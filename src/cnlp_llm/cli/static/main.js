@@ -1,6 +1,7 @@
 const title = document.querySelector(".title");
 const button = document.querySelector(".submit-button");
 const outputArea = document.querySelector(".output-area");
+const loadingIcon = document.querySelector(".loading-icon");
 
 setTimeout(async (_) => {
   try {
@@ -18,8 +19,9 @@ setTimeout(async (_) => {
 
 button.addEventListener("click", async (_) => {
   try {
+    loadingIcon.removeAttribute("hidden");
     inputString = document.querySelector(".input-textarea").value;
-    const response = await fetch("/", {
+    const response = await fetch("/evaluate", {
       method: "post",
       body: JSON.stringify([inputString]),
       headers: {
@@ -27,7 +29,10 @@ button.addEventListener("click", async (_) => {
       },
     });
     console.log(response);
-    outputArea.innerHTML = (await response.json()).response;
+    outputArea.innerHTML = (
+      await response.json()
+    ).samples[0].output.choices[0].message.content;
+    loadingIcon.setAttribute("hidden", true);
     outputArea.removeAttribute("hidden");
   } catch (err) {
     alert(`Error: ${err}`);

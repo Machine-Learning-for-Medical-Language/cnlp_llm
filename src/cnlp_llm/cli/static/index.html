@@ -13,12 +13,21 @@
       <h1 class="title">CNLP_LLM Pipeline</h1>
       <div class="input-area">
         <textarea
+          oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
           class="input-textarea border"
           placeholder="pipeline input text"
         ></textarea>
         <button class="submit-button border">Submit</button>
       </div>
       <h2>Output</h2>
+      <div class="loading-icon" hidden>
+        <div class="lds-ring">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
       <div class="output-area border" hidden></div>
     </main>
     <script src="main.js"></script>
