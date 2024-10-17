@@ -45,11 +45,11 @@ def server(tmp_path_factory: TempPathFactory):
     proc.kill()
 
 
-def test_serve_pipeline(server: str):
+def test_serve_task(server: str):
     s = requests.Session()
     s.mount("http://", HTTPAdapter(max_retries=Retry(total=5, backoff_factor=0.1)))
 
-    # test posting to the pipeline
+    # test posting to the task
     response = s.post(f"{server}/evaluate", json=["a", "b", "c"])
     response.raise_for_status()
     samples = response.json()["samples"]
@@ -61,7 +61,7 @@ def test_serve_pipeline(server: str):
     response.raise_for_status()
     assert response.content.decode().startswith("<!DOCTYPE html>")
 
-    # test getting the pipeline name
+    # test getting the task name
     response = s.get(f"{server}/name")
     response.raise_for_status()
     assert response.json()["name"] == "template_task"

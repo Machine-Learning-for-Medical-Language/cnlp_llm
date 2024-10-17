@@ -32,12 +32,12 @@ def pirate_assistant(pirate_name: str = "Tensorbeard") -> Task:
     )
 ```
 
-To start the server for the pirate example, run `cnlp_llm serve examples/infer/pirate.py` (or equivalently `cnlp_llm serve examples/infer/pirate.py@pirate_assistant`). Now you can send POST requests to [localhost:8000/evaluate](http://localhost:8000/evaluate) and get a response from the pipeline.
+To start the server for the pirate example, run `cnlp_llm serve examples/infer/pirate.py` (or equivalently `cnlp_llm serve examples/infer/pirate.py@pirate_assistant`). Now you can send POST requests to [localhost:8000/evaluate](http://localhost:8000/evaluate) and get a response from the task.
 
 ```bash
 curl -X POST -H 'Content-Type: application/json' -d '["Hello, who are you?"]' http://localhost:8000/evaluate
 ```
 
-You can also point your web browser at [localhost:8000](http://localhost:8000) for a simple web interface to send strings of text to your pipeline.
+You can also point your web browser at [localhost:8000](http://localhost:8000) for a simple web interface to send strings of text to your task.
 
 You can pass task arguments with `-T`, for example: `cnlp_llm serve examples/infer/pirate.py -T pirate_name='Jack Sparrow'`

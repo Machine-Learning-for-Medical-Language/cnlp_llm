@@ -53,7 +53,7 @@ from inspect_ai.model import ModelName
     multiple=True,
     type=str,
     envvar=["CNLP_SERVE_TASK_ARGS"],
-    help="One or more pipeline arguments (e.g. -T arg=value)",
+    help="One or more task arguments (e.g. -T arg=value)",
 )
 def serve(
     task_spec: str,
@@ -65,7 +65,7 @@ def serve(
     m: tuple[str] | None = None,
     t: tuple[str] | None = None,
 ):
-    "Start a FastAPI server to serve a Pipeline. TASK_SPEC is a path to a function that returns a Task and is decorated with @task."
+    "Start a FastAPI server to serve a task. TASK_SPEC is a path to a function that returns a Task and is decorated with @task."
 
     model_args = parse_cli_args(m)
     task_args = parse_cli_args(t)
