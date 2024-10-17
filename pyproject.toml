@@ -18,7 +18,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest"]
+dev = [
+    "pre-commit",
+    "pyright[nodejs]",
+    "pytest",
+    "ruff==0.6.9",     # same as in pre-commit hooks
+]
 
 [project.scripts]
 "cnlp_llm" = "cnlp_llm.cli:main"
@@ -26,3 +31,8 @@ dev = ["pytest"]
 [project.urls]
 Homepage = "https://github.com/Machine-Learning-for-Medical-Language/cnlp_llm"
 Issues = "https://github.com/Machine-Learning-for-Medical-Language/cnlp_llm/issues"
+
+[tool.pyright]
+include = ["src"]
+typeCheckingMode = "standard"
+useLibraryCodeForTypes = true
