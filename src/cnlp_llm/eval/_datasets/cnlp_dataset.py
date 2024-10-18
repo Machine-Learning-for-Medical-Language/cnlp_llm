@@ -85,7 +85,6 @@ def cnlp_csv_dataset(
     encoding: str = "utf-8",
     name: str | None = None,
 ) -> Dataset:
-
     # read and convert samples
     with open(csv_file, "r", encoding=encoding) as f:
         # filter out rows with empty values
@@ -184,7 +183,6 @@ def cnlp_dataset(
     encoding: str = "utf-8",
     name: str | None = None,
 ) -> Dataset:
-
     def file_dataset_wrapper(file_path):
         return cnlp_file_dataset(
             file_path,
