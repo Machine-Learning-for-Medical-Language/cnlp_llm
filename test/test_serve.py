@@ -24,7 +24,7 @@ def start_task_server(log_dir):
 @pytest.fixture(scope="session")
 def server(tmp_path_factory: TempPathFactory):
     server_log_dir = tmp_path_factory.mktemp("server_logs")
-    host = "localhost"
+    host = "127.0.0.1"
     port = "8000"
     proc = subprocess.Popen(
         [
@@ -49,7 +49,7 @@ def server(tmp_path_factory: TempPathFactory):
 
 def test_serve_task(server: str):
     s = requests.Session()
-    s.mount("http://", HTTPAdapter(max_retries=Retry(total=5, backoff_factor=0.5)))
+    s.mount("http://", HTTPAdapter(max_retries=Retry(total=7, backoff_factor=0.5)))
 
     # test posting to the task
     response = s.post(f"{server}/evaluate", json=["a", "b", "c"])
