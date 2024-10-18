@@ -11,19 +11,19 @@ The goal of this library is to consolidate, extend, and provide helpful wrappers
 - [cnlp\_llm](#cnlp_llm)
   - [Introduction](#introduction)
   - [Table of Contents](#table-of-contents)
-  - [Installation for Development](#installation-for-development)
+  - [Installation](#installation)
+    - [Development Tools](#development-tools)
   - [Training](#training)
-    - [Pretraining](#pretraining)
+    - [Pretraining (not yet implemented)](#pretraining-not-yet-implemented)
     - [Fine-tuning](#fine-tuning)
   - [Chat, Evaluation, and Serving](#chat-evaluation-and-serving)
     - [Simple Chat REPL](#simple-chat-repl)
     - [Evaluation](#evaluation)
-    - [Serving](#serving)
-  - [Running Tests](#running-tests)
+    - [Hosting an Inference Server](#hosting-an-inference-server)
 
-## Installation for Development
+## Installation
 
-Optionally create a conda environment:
+Optionally create a conda environment (currently only Python 3.10 is officially supported):
 
 ```sh
 conda create -n cnlp_llm python=3.10
@@ -38,11 +38,21 @@ cd cnlp_llm
 pip install -e ".[dev]"
 ```
 
+### Development Tools
+
+A few useful development tools are provided via the `Makefile`.
+
+To install pre-commit hooks, run `make hooks`.
+
+To lint, format, and type check your code, run `make check`.
+
+To run tests with pytest, run `make test`.
+
 ## Training
 
-### Pretraining
+### Pretraining (not yet implemented)
 
-Not yet implemented.
+...
 
 ### Fine-tuning
 
@@ -58,10 +68,6 @@ To start an interactive chat session with a model, run `cnlp_llm chat`. See the 
 
 For evaluation, we use [Inspect](https://inspect.ai-safety-institute.org.uk/). For more details, see the [examples](examples/eval) or the [Inspect documentation](https://inspect.ai-safety-institute.org.uk/workflow.html#eval-basics).
 
-### Serving
+### Hosting an Inference Server
 
-You can serve inference of a Task on your local network with `cnlp_llm serve`. See the [examples](examples/serve) for more info.
-
-## Running Tests
-
-To run the tests, just run `pytest` from the project's base directory.
+You can serve inference of an inspect `Task` on your local network with `cnlp_llm serve`. See the [examples](examples/serve) for more info.
