@@ -1,0 +1,21 @@
+{
+  "data": [
+    {
+      "text": "input-1",
+      "id": "1",
+      "task-a": "output-a-1",
+      "task-b": "output-b-1"
+    },
+    {
+      "text": "input-2",
+      "id": "2",
+      "task-a": "output-a-2",
+      "task-b": "output-b-2"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "task": "json-dataset-task",
+    "subtasks": []
+  }
+}
