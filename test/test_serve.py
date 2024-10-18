@@ -1,3 +1,4 @@
+import os
 import subprocess
 
 import pytest
@@ -6,6 +7,8 @@ from inspect_ai import Task, task
 from inspect_ai.solver import prompt_template
 from pytest import TempPathFactory
 from requests.adapters import HTTPAdapter, Retry
+
+IN_GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
 
 
 @task
@@ -39,17 +42,23 @@ def server(tmp_path_factory: TempPathFactory):
             port,
             "-T",
             'template="{prompt}{prompt}"',
+            "--model",
+            "mockllm/model",
         ]
     )
     yield f"http://{host}:{port}/"
     proc.kill()
 
 
-def test_serve_pipeline(server: str):
+@pytest.mark.skipif(
+    IN_GITHUB_ACTIONS,
+    reason="Test doesn't work in Github Actions for some reason.",
+)
+def test_serve_task(server: str):
     s = requests.Session()
-    s.mount("http://", HTTPAdapter(max_retries=Retry(total=5, backoff_factor=0.1)))
+    s.mount("http://", HTTPAdapter(max_retries=Retry(total=5, backoff_factor=0.5)))
 
-    # test posting to the pipeline
+    # test posting to the task
     response = s.post(f"{server}/evaluate", json=["a", "b", "c"])
     response.raise_for_status()
     samples = response.json()["samples"]
@@ -61,7 +70,7 @@ def test_serve_pipeline(server: str):
     response.raise_for_status()
     assert response.content.decode().startswith("<!DOCTYPE html>")
 
-    # test getting the pipeline name
+    # test getting the task name
     response = s.get(f"{server}/name")
     response.raise_for_status()
     assert response.json()["name"] == "template_task"

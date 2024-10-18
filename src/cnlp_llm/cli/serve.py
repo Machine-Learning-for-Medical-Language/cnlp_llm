@@ -9,7 +9,7 @@ from inspect_ai import eval as task_eval
 from inspect_ai._cli.util import parse_cli_args
 from inspect_ai._eval.loader import load_task_spec
 from inspect_ai.dataset import MemoryDataset, Sample
-from inspect_ai.model import ModelName
+from inspect_ai.model import ModelName, get_model
 
 
 @click.command()
@@ -53,7 +53,7 @@ from inspect_ai.model import ModelName
     multiple=True,
     type=str,
     envvar=["CNLP_SERVE_TASK_ARGS"],
-    help="One or more pipeline arguments (e.g. -T arg=value)",
+    help="One or more task arguments (e.g. -T arg=value)",
 )
 def serve(
     task_spec: str,
@@ -65,14 +65,16 @@ def serve(
     m: tuple[str] | None = None,
     t: tuple[str] | None = None,
 ):
-    "Start a FastAPI server to serve a Pipeline. TASK_SPEC is a path to a function that returns a Task and is decorated with @task."
+    "Start a FastAPI server to serve a task. TASK_SPEC is a path to a function that returns a Task and is decorated with @task."
 
     model_args = parse_cli_args(m)
     task_args = parse_cli_args(t)
 
+    model = get_model(model_name)
+
     task = load_task_spec(
         task_spec,
-        ModelName(model_name or ""),
+        ModelName(model),
         task_args=task_args,
     )[0]
 
