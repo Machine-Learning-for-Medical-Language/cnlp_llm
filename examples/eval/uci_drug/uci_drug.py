@@ -1,9 +1,10 @@
 import sys
 
+from cnlp_llm.eval import cnlp_dataset
+
 from inspect_ai import Task
 from inspect_ai import eval as inspect_eval
 from inspect_ai import task
-from inspect_ai.dataset import csv_dataset
 from inspect_ai.scorer import match
 from inspect_ai.solver import generate, system_message
 
@@ -16,8 +17,8 @@ Don't explain your reasoning, just respond with "Low", "Medium", or "High" on a 
 @task
 def uci_drug_task(dataset_file: str):
     return Task(
-        dataset=csv_dataset(dataset_file),
-        plan=[system_message(SYSTEM_MESSAGE), generate()],
+        dataset=cnlp_dataset(dataset_file, task="sentiment"),
+        plan=[system_message(SYSTEM_MESSAGE), generate(max_tokens=3)],
         scorer=match(location="begin"),
     )
 
@@ -27,6 +28,5 @@ if __name__ == "__main__":
     inspect_eval(
         uci_drug_task,
         task_args={"dataset_file": dataset_file},
-        max_tokens=3,  # 3 tokens should be plenty for a one word response
         # limit=100,  # uncomment this line to only evaluate 100 samples
     )

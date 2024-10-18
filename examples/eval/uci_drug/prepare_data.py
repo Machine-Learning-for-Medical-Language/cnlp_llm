@@ -1,3 +1,4 @@
+# Copied from https://github.com/Machine-Learning-for-Medical-Language/cnlp_transformers/blob/main/src/cnlpt/data/transform_uci_drug.py
 """
 Data Download Source:
 https://archive.ics.uci.edu/dataset/462/drug+review+dataset+drugs+com
@@ -23,6 +24,7 @@ When using this dataset, you agree that you
 4) cite UCI data lab and the source
 """
 
+import csv
 import sys
 from pathlib import Path
 
@@ -32,8 +34,8 @@ TRAIN_FILE = "drugsComTrain_raw.tsv"
 TEST_FILE = "drugsComTest_raw.tsv"
 
 
-def to_sentiment(rating_str: str):
-    rating = int(rating_str)
+def to_sentiment(rating):
+    rating = int(rating)
     if rating <= 4:
         return "Low"
     elif rating > 4 and rating < 8:
@@ -42,7 +44,7 @@ def to_sentiment(rating_str: str):
         return "High"
 
 
-def remove_newline(review: str):
+def remove_newline(review):
     review = review.replace("&#039;", "'")
     review = review.replace("\n", " <cr> ")
     review = review.replace("\r", " <cr> ")
@@ -50,43 +52,65 @@ def remove_newline(review: str):
     return review
 
 
-def prepare_data(input_path: Path, output_path: Path):
+def main():
+    input_path = Path(sys.argv[1])
+    output_path = Path(sys.argv[-1])
+
     # read-in files
     df = pd.read_csv(input_path / TRAIN_FILE, sep="\t", usecols=["review", "rating"])
     test = pd.read_csv(input_path / TEST_FILE, sep="\t", usecols=["review", "rating"])
 
     # split into sentiments categories
-    test["target"] = test.rating.apply(to_sentiment)
-    df["target"] = df.rating.apply(to_sentiment)
+    test["sentiment"] = test.rating.apply(to_sentiment)
+    df["sentiment"] = df.rating.apply(to_sentiment)
 
     # remove newlines:
     test["review"] = test.review.apply(remove_newline)
     df["review"] = df.review.apply(remove_newline)
 
     # remove quotes
-    df["input"] = df["review"].str.replace('"', "")
-    test["input"] = test["review"].str.replace('"', "")
+    df["text"] = df["review"].str.replace('"', "")
+    test["text"] = test["review"].str.replace('"', "")
 
     # split train and dev into 9:1 ratio
     train = df.sample(frac=0.9, random_state=200)
     dev = df.drop(train.index)
 
     # select column as desired
-    test = test[["target", "input"]]
-    train = train[["target", "input"]]
-    dev = dev[["target", "input"]]
+    test = test[["sentiment", "text"]]
+    train = train[["sentiment", "text"]]
+    dev = dev[["sentiment", "text"]]
 
     # output CSVs
     output_path.mkdir(parents=True, exist_ok=True)
-    test.to_csv(output_path / "test.csv", index=False)
-    train.to_csv(output_path / "train.csv", index=False)
-    dev.to_csv(output_path / "dev.csv", index=False)
+    test.to_csv(
+        output_path / "test.tsv",
+        sep="\t",
+        encoding="utf-8",
+        index=False,
+        header=True,
+        quoting=csv.QUOTE_NONE,
+        escapechar=None,
+    )
+    train.to_csv(
+        output_path / "train.tsv",
+        sep="\t",
+        encoding="utf-8",
+        index=False,
+        header=True,
+        quoting=csv.QUOTE_NONE,
+        escapechar=None,
+    )
+    dev.to_csv(
+        output_path / "dev.tsv",
+        sep="\t",
+        encoding="utf-8",
+        index=False,
+        header=True,
+        quoting=csv.QUOTE_NONE,
+        escapechar=None,
+    )
 
 
 if __name__ == "__main__":
-    assert (
-        len(sys.argv) == 3
-    ), "usage: `python prepare_data.py <raw dir> <processed dir>`"
-    RAW_DATA_DIR = sys.argv[1]
-    PROCESSED_DATA_DIR = sys.argv[2]
-    prepare_data(Path(RAW_DATA_DIR), Path(PROCESSED_DATA_DIR))
+    main()
