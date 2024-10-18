@@ -9,7 +9,7 @@ from inspect_ai import eval as task_eval
 from inspect_ai._cli.util import parse_cli_args
 from inspect_ai._eval.loader import load_task_spec
 from inspect_ai.dataset import MemoryDataset, Sample
-from inspect_ai.model import ModelName
+from inspect_ai.model import ModelName, get_model
 
 
 @click.command()
@@ -70,9 +70,11 @@ def serve(
     model_args = parse_cli_args(m)
     task_args = parse_cli_args(t)
 
+    model = get_model(model_name)
+
     task = load_task_spec(
         task_spec,
-        ModelName(model_name or ""),
+        ModelName(model),
         task_args=task_args,
     )[0]
 
