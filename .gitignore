@@ -1,6 +1,8 @@
 output/
 
 *.DS_Store
+.ruff_cache/
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
