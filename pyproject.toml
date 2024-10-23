@@ -18,12 +18,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = [
-    "pre-commit",
+lint = [
     "pyright[nodejs]",
-    "pytest",
     "ruff==0.6.9",     # same as in pre-commit hooks
 ]
+test = ["pytest"]
+dev = ["cnlp-llm[lint,test]", "pre-commit"]
 
 [project.scripts]
 "cnlp_llm" = "cnlp_llm.cli:main"
@@ -36,3 +36,6 @@ Issues = "https://github.com/Machine-Learning-for-Medical-Language/cnlp_llm/issu
 include = ["src"]
 typeCheckingMode = "standard"
 useLibraryCodeForTypes = true
+
+[tool.uv.sources]
+cnlp-llm = { workspace = true }
