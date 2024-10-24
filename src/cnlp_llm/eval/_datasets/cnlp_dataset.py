@@ -39,7 +39,7 @@ def cnlp_json_dataset(
     if len(input_fields) == 0:
         raise ValueError('cnlp json datasets must contain a "text" field for input.')
 
-    if task not in fields:
+    if task is not None and task not in fields:
         raise ValueError(f'"{task}" field not found in {json_file}')
 
     def record_to_sample(record: dict[str, Any]):
@@ -101,7 +101,7 @@ def cnlp_csv_dataset(
     if len(input_columns) == 0:
         raise ValueError('cnlp csv datasets must contain a "text" field for input.')
 
-    if task not in columns:
+    if task is not None and task not in columns:
         raise ValueError(f'"{task}" column not found in {csv_file}')
 
     def row_to_sample(row: dict[str | Any, str | Any]):
