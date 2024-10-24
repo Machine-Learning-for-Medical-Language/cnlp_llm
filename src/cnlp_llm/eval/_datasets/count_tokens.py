@@ -10,7 +10,10 @@ from ...console import console
 def get_token_counts(
     dataset: Dataset, tiktoken_encoding_name="o200k_base"
 ) -> Iterable[int]:
-    encoding = tiktoken.get_encoding(tiktoken_encoding_name)
+    try:
+        encoding = tiktoken.get_encoding(tiktoken_encoding_name)
+    except ValueError:
+        raise ValueError(f"unknown encoding {tiktoken_encoding_name}")
     for sample in dataset:
         text_to_encode = str(
             sample.input
