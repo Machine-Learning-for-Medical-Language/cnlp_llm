@@ -342,12 +342,9 @@ dependencies = [
     { name = "uvicorn" },
 ]
 
-[package.optional-dependencies]
+[package.dependency-groups]
 dev = [
     { name = "pre-commit" },
-    { name = "pyright", extra = ["nodejs"] },
-    { name = "pytest" },
-    { name = "ruff" },
 ]
 lint = [
     { name = "pyright", extra = ["nodejs"] },
@@ -360,19 +357,25 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "click", specifier = "~=8.1" },
-    { name = "cnlp-llm", extras = ["lint", "test"], marker = "extra == 'dev'", editable = "." },
     { name = "fastapi", specifier = "~=0.114" },
     { name = "inspect-ai", specifier = "~=0.3" },
     { name = "openai", specifier = "~=1.44" },
-    { name = "pre-commit", marker = "extra == 'dev'" },
-    { name = "pyright", extras = ["nodejs"], marker = "extra == 'lint'" },
-    { name = "pytest", marker = "extra == 'test'" },
     { name = "rich", specifier = ">=13.9.3" },
-    { name = "ruff", marker = "extra == 'lint'", specifier = "==0.6.9" },
     { name = "tiktoken", specifier = ">=0.8.0" },
     { name = "trl", specifier = "~=0.10" },
     { name = "uvicorn", specifier = "~=0.30" },
 ]
+
+[package.metadata.dependency-groups]
+dev = [
+    { name = "cnlp-llm", extras = ["lint", "test"], editable = "." },
+    { name = "pre-commit", specifier = ">=4.0.1" },
+]
+lint = [
+    { name = "pyright", extras = ["nodejs"], specifier = ">=1.1.386" },
+    { name = "ruff", specifier = "==0.6.9" },
+]
+test = [{ name = "pytest", specifier = ">=8.3.3" }]
 
 [[package]]
 name = "colorama"

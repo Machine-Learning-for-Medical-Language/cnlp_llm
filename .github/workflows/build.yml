@@ -54,7 +54,7 @@ jobs:
           enable-cache: true
       - name: Install dependencies
         run: |
-          uv add . --optional test
+          uv sync --group test
       - name: Test with pytest
         run: |
           uv run pytest
