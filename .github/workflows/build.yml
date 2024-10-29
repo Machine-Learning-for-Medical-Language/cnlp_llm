@@ -25,11 +25,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/ruff-action@v1
         with:
-          version: 0.6.9
+          version: 0.7.1 # same as in pre-commit hooks and pyproject.toml
           args: check
       - uses: astral-sh/ruff-action@v1
         with:
-          version: 0.6.9
+          version: 0.7.1 # same as in pre-commit hooks and pyproject.toml
           args: format --check
   pyright:
     runs-on: ubuntu-latest
