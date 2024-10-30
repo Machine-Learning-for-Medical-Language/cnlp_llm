@@ -33,6 +33,7 @@ jobs:
         uses: astral-sh/setup-uv@v3
         with:
           enable-cache: true
+          cache-dependency-glob: ""
       - name: Test with pytest
         run: |
           uv run -v --frozen --group test --python ${{ matrix.python-version }} pytest
