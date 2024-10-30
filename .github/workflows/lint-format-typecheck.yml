@@ -1,4 +1,4 @@
-name: Build
+name: Lint, Format, and Typecheck
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
       - "src/**"
       - "test/**"
       - "pyproject.toml"
+      - ".github/workflows/**"
   pull_request:
     branches:
       - main
@@ -15,6 +16,7 @@ on:
       - "src/**"
       - "test/**"
       - "pyproject.toml"
+      - ".github/workflows/**"
 jobs:
   ruff:
     runs-on: ubuntu-latest
