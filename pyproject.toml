@@ -20,6 +20,22 @@ dependencies = [
     "datasets>=3.0.2",
 ]
 
+[project.optional-dependencies]
+no-cuda = [
+    "nvidia-cublas-cu12;sys_platform == 'never'",
+    "nvidia-cuda-cupti-cu12;sys_platform == 'never'",
+    "nvidia-cuda-nvrtc-cu12;sys_platform == 'never'",
+    "nvidia-cuda-runtime-cu12;sys_platform == 'never'",
+    "nvidia-cudnn-cu12;sys_platform == 'never'",
+    "nvidia-cufft-cu12;sys_platform == 'never'",
+    "nvidia-curand-cu12;sys_platform == 'never'",
+    "nvidia-cusolver-cu12;sys_platform == 'never'",
+    "nvidia-cusparse-cu12;sys_platform == 'never'",
+    "nvidia-nccl-cu12;sys_platform == 'never'",
+    "nvidia-nvjitlink-cu12;sys_platform == 'never'",
+    "nvidia-nvtx-cu12;sys_platform == 'never'",
+]
+
 [dependency-groups]
 lint = [
     "pyright[nodejs]>=1.1.386",
