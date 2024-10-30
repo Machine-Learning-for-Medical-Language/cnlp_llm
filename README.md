@@ -23,19 +23,12 @@ The goal of this library is to consolidate, extend, and provide helpful wrappers
 
 ## Installation
 
-Optionally create a conda environment (currently only Python 3.10 is officially supported):
-
-```sh
-conda create -n cnlp_llm python=3.10
-conda activate cnlp_llm
-```
-
-Clone this repo and install using pip:
+Clone this repo and install using [uv](https://github.com/astral-sh/uv):
 
 ```sh
 git clone https://github.com/Machine-Learning-for-Medical-Language/cnlp_llm.git
 cd cnlp_llm
-pip install -e ".[dev]"
+uv sync --group dev
 ```
 
 ### Development Tools
