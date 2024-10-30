@@ -12,6 +12,54 @@ from inspect_ai.dataset import MemoryDataset, Sample
 from inspect_ai.model import ModelName, get_model
 
 
+def create_task_server(
+    task_spec: str,
+    log_dir: str,
+    root: str = "",
+    model_name: str | None = None,
+    m: tuple[str] | None = None,
+    t: tuple[str] | None = None,
+) -> FastAPI:
+    model_args = parse_cli_args(m)
+    task_args = parse_cli_args(t)
+
+    model = get_model(model_name)
+
+    task = load_task_spec(
+        task_spec,
+        ModelName(model),
+        task_args=task_args,
+    )[0]
+
+    app = FastAPI(title=task.name, root_path=root)
+
+    static_path = Path(__file__).parent.resolve().joinpath("static")
+    app.mount("/static", StaticFiles(directory=static_path, html=True), name="static")
+
+    @app.post("/evaluate")
+    def evaluate(input: list[str]):
+        task.dataset = MemoryDataset(samples=[Sample(input=x) for x in input])
+        # TODO: we can maybe use eval_async here instead? Not sure if that's necessary
+        eval_result = task_eval(
+            task,
+            model=model_name,
+            model_args=model_args,
+            task_args=task_args,
+            log_dir=log_dir,
+        )[0]
+        return eval_result.model_dump(mode="json")
+
+    @app.get("/name")
+    def get_name():
+        return {"name": task.name}
+
+    @app.get("/")
+    def get_html():
+        return RedirectResponse("/static")
+
+    return app
+
+
 @click.command()
 @click.argument("task_spec")
 @click.option(
@@ -66,42 +114,12 @@ def serve(
     t: tuple[str] | None = None,
 ):
     "Start a FastAPI server to serve a task. TASK_SPEC is a path to a function that returns a Task and is decorated with @task."
-
-    model_args = parse_cli_args(m)
-    task_args = parse_cli_args(t)
-
-    model = get_model(model_name)
-
-    task = load_task_spec(
+    app = create_task_server(
         task_spec,
-        ModelName(model),
-        task_args=task_args,
-    )[0]
-
-    app = FastAPI(title=task.name, root_path=root)
-
-    static_path = Path(__file__).parent.resolve().joinpath("static")
-    app.mount("/static", StaticFiles(directory=static_path, html=True), name="static")
-
-    @app.post("/evaluate")
-    def evaluate(input: list[str]):
-        task.dataset = MemoryDataset(samples=[Sample(input=x) for x in input])
-        # TODO: we can maybe use eval_async here instead? Not sure if that's necessary
-        eval_result = task_eval(
-            task,
-            model=model_name,
-            model_args=model_args,
-            task_args=task_args,
-            log_dir=log_dir,
-        )[0]
-        return eval_result.model_dump(mode="json")
-
-    @app.get("/name")
-    def get_name():
-        return {"name": task.name}
-
-    @app.get("/")
-    def get_html():
-        return RedirectResponse("/static")
-
+        log_dir,
+        root,
+        model_name,
+        m,
+        t,
+    )
     uvicorn.run(app, host=host, port=port)

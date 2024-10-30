@@ -1,14 +1,10 @@
-import os
-import subprocess
-
 import pytest
-import requests
+from fastapi.testclient import TestClient
 from inspect_ai import Task, task
 from inspect_ai.solver import prompt_template
 from pytest import TempPathFactory
-from requests.adapters import HTTPAdapter, Retry
 
-IN_GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
+from cnlp_llm.cli.serve import create_task_server
 
 
 @task
@@ -19,58 +15,33 @@ def template_task(template: str):
     )
 
 
-def start_task_server(log_dir):
-    echo_task = template_task("{prompt}{prompt}")
-    echo_task.serve(host="localhost", port=8000, log_dir=log_dir)
-
-
-@pytest.fixture(scope="session")
-def server(tmp_path_factory: TempPathFactory):
-    server_log_dir = tmp_path_factory.mktemp("server_logs")
-    host = "localhost"
-    port = "8000"
-    proc = subprocess.Popen(
-        [
-            "cnlp_llm",
-            "serve",
-            f"{__file__}@template_task",
-            "--log-dir",
-            server_log_dir,
-            "--host",
-            host,
-            "--port",
-            port,
-            "-T",
-            'template="{prompt}{prompt}"',
-            "--model",
-            "mockllm/model",
-        ]
+@pytest.fixture()
+def template_task_client(tmp_path_factory: TempPathFactory):
+    server_log_dir = tmp_path_factory.mktemp("test_server_logs")
+    app = create_task_server(
+        task_spec=f"{__file__}@template_task",
+        log_dir=str(server_log_dir),
+        model_name="mockllm/model",
+        t=('template="{prompt}{prompt}"',),
     )
-    yield f"http://{host}:{port}/"
-    proc.kill()
+    with TestClient(app) as client:
+        yield client
 
 
-@pytest.mark.skipif(
-    IN_GITHUB_ACTIONS,
-    reason="Test doesn't work in Github Actions for some reason.",
-)
-def test_serve_task(server: str):
-    s = requests.Session()
-    s.mount("http://", HTTPAdapter(max_retries=Retry(total=5, backoff_factor=0.5)))
-
+def test_serve_task(template_task_client: TestClient):
     # test posting to the task
-    response = s.post(f"{server}/evaluate", json=["a", "b", "c"])
+    response = template_task_client.post("/evaluate", json=["a", "b", "c"])
     response.raise_for_status()
     samples = response.json()["samples"]
     for sample, target in zip(samples, ["aa", "bb", "cc"]):
         assert sample["messages"][0]["content"] == target
 
     # test getting the webpage
-    response = s.get(f"{server}/")
+    response = template_task_client.get("/")
     response.raise_for_status()
     assert response.content.decode().startswith("<!DOCTYPE html>")
 
     # test getting the task name
-    response = s.get(f"{server}/name")
+    response = template_task_client.get("/name")
     response.raise_for_status()
     assert response.json()["name"] == "template_task"
