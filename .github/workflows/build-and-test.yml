@@ -33,7 +33,6 @@ jobs:
         uses: astral-sh/setup-uv@v3
         with:
           enable-cache: true
-          cache-dependency-glob: "" # don't invalidate the cache to avoid re-downloading big dependencies (cuda)
       - name: Test with pytest
         run: |
-          uv run -v --frozen --group test --python ${{ matrix.python-version }} pytest
+          uv run -v --frozen --index https://download.pytorch.org/whl/cpu --group test --python ${{ matrix.python-version }} pytest
