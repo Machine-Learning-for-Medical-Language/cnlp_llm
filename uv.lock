@@ -346,6 +346,9 @@ dependencies = [
 [package.dependency-groups]
 dev = [
     { name = "pre-commit" },
+    { name = "pyright", extra = ["nodejs"] },
+    { name = "pytest" },
+    { name = "ruff" },
 ]
 lint = [
     { name = "pyright", extra = ["nodejs"] },
@@ -370,8 +373,10 @@ requires-dist = [
 
 [package.metadata.dependency-groups]
 dev = [
-    { name = "cnlp-llm", extras = ["lint", "test"], editable = "." },
     { name = "pre-commit", specifier = ">=4.0.1" },
+    { name = "pyright", extras = ["nodejs"], specifier = ">=1.1.386" },
+    { name = "pytest", specifier = ">=8.3.3" },
+    { name = "ruff", specifier = "==0.7.1" },
 ]
 lint = [
     { name = "pyright", extras = ["nodejs"], specifier = ">=1.1.386" },
