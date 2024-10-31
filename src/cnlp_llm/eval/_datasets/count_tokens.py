@@ -1,13 +1,53 @@
-from typing import Iterable
+from collections import Counter
+from typing import Iterable, Literal
 
 import tiktoken
 from inspect_ai.dataset import Dataset
+from inspect_ai.log import EvalLog
+from inspect_ai.log._file import list_eval_logs, read_eval_log
+from inspect_ai.model import ChatMessage
 from rich.progress import track
 
 from ...console import console
 
 
-def get_token_counts(
+# Adapted from the openai cookbook
+def count_tokens_from_messages(
+    messages: list[ChatMessage], tiktoken_encoding_name="o200k_base"
+) -> Counter[Literal["system", "user", "assistant", "tool"]]:
+    """Return the approximate number of tokens used by a list of messages, categorized by role."""
+
+    encoding = tiktoken.get_encoding(tiktoken_encoding_name)
+    tokens_per_message = 3
+
+    num_tokens = {"system": 0, "user": 0, "assistant": 0, "tool": 0}
+    for message in messages:
+        role = message.role
+        num_tokens[role] += tokens_per_message
+        num_tokens[role] += len(encoding.encode(role))
+        num_tokens[role] += len(encoding.encode(message.text))
+
+    return Counter(num_tokens)
+
+
+def count_tokens_in_eval_log(
+    log: EvalLog | str | None = None, tiktoken_encoding_name="o200k_base"
+):
+    if log is None:
+        log = list_eval_logs()[-1].name
+    if isinstance(log, str):
+        log = read_eval_log(log)
+    counts: Counter[Literal["system", "user", "assistant", "tool"]] = Counter(
+        {"system": 0, "user": 0, "assistant": 0, "tool": 0}
+    )
+    for sample in log.samples:
+        counts.update(
+            count_tokens_from_messages(sample.messages, tiktoken_encoding_name)
+        )
+    return counts
+
+
+def get_dataset_token_counts(
     dataset: Dataset, tiktoken_encoding_name="o200k_base"
 ) -> Iterable[int]:
     try:
@@ -24,7 +64,7 @@ def get_token_counts(
 def print_token_count_stats(dataset: Dataset, tiktoken_encoding_name="o200k_base"):
     n = total = min_ = max_ = 0
     for count in track(
-        get_token_counts(dataset, tiktoken_encoding_name),
+        get_dataset_token_counts(dataset, tiktoken_encoding_name),
         "Tokenizing...",
         total=len(dataset),
     ):
