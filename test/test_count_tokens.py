@@ -1,6 +1,6 @@
 from inspect_ai.dataset import MemoryDataset, Sample
 
-from cnlp_llm.eval import get_token_counts
+from cnlp_llm.eval import get_dataset_token_counts
 
 
 def test_count_tokens():
@@ -10,7 +10,9 @@ def test_count_tokens():
     samples = [Sample(input=single_token * i) for i in range(1, n + 1)]
     dataset = MemoryDataset(samples)
 
-    counts = list(get_token_counts(dataset, tiktoken_encoding_name="o200k_base"))
+    counts = list(
+        get_dataset_token_counts(dataset, tiktoken_encoding_name="o200k_base")
+    )
 
     assert len(counts) == n
 
