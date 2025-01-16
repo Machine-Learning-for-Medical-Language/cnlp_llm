@@ -42,6 +42,15 @@ def seq_prob_multiple_choice() -> Solver:
 
         state.messages.append(ChatMessageAssistant(content=chosen.value))
 
+        # update metadata with probabilities values
+        if "seq_probs" not in state.metadata:
+            state.metadata["seq_probs"] = []
+        seq_prob_metadata: list[dict[str, float]] = state.metadata["seq_probs"]
+        probs_map = {
+            choice.value: prob for choice, prob in zip(state.choices, choice_probs)
+        }
+        seq_prob_metadata.append(probs_map)
+
         return state
 
     return solve
