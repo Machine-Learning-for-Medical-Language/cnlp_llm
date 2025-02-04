@@ -1,7 +1,7 @@
 # Copied from https://github.com/Machine-Learning-for-Medical-Language/cnlp_transformers/blob/main/src/cnlpt/data/transform_uci_drug.py
 """
 Data Download Source:
-https://archive.ics.uci.edu/dataset/462/drug+review+dataset+drugs+com
+https://archive.ics.uci.edu/dataset/461/drug+review+dataset+druglib+com
 
 Data Source:
 Surya Kallumadi
@@ -30,8 +30,8 @@ from pathlib import Path
 
 import pandas as pd
 
-TRAIN_FILE = "drugsComTrain_raw.tsv"
-TEST_FILE = "drugsComTest_raw.tsv"
+TRAIN_FILE = "drugLibTrain_raw.tsv"
+TEST_FILE = "drugLibTest_raw.tsv"
 
 
 def to_sentiment(rating):
@@ -57,9 +57,19 @@ def main():
     output_path = Path(sys.argv[-1])
 
     # read-in files
-    df = pd.read_csv(input_path / TRAIN_FILE, sep="\t", usecols=["review", "rating"])
-    test = pd.read_csv(input_path / TEST_FILE, sep="\t", usecols=["review", "rating"])
-
+    df = pd.read_csv(
+        input_path / TRAIN_FILE, 
+        sep="\t", usecols=["rating", "benefitsReview", "sideEffectsReview", "commentsReview"],
+        dtype={"benefitsReview": str, "sideEffectsReview": str, "commentsReview": str},
+        keep_default_na=False,
+    )
+    test = pd.read_csv(
+        input_path / TEST_FILE, 
+        sep="\t", usecols=["rating", "benefitsReview", "sideEffectsReview", "commentsReview"],
+        dtype={"benefitsReview": str, "sideEffectsReview": str, "commentsReview": str},
+        keep_default_na=False,
+    )
+    
     # split into sentiments categories
     test["sentiment"] = test.rating.apply(to_sentiment)
     df["sentiment"] = df.rating.apply(to_sentiment)
@@ -67,12 +77,32 @@ def main():
     df = df[df["sentiment"] != "Medium"]
 
     # remove newlines:
-    test["review"] = test.review.apply(remove_newline)
-    df["review"] = df.review.apply(remove_newline)
+    test["benefits"] = test.benefitsReview.apply(remove_newline)
+    df["benefits"] = df.benefitsReview.apply(remove_newline)
+
+    test["sideEffects"] = test.sideEffectsReview.apply(remove_newline)
+    df["sideEffects"] = df.sideEffectsReview.apply(remove_newline)
+
+    test["comments"] = test.commentsReview.apply(remove_newline)
+    df["comments"] = df.commentsReview.apply(remove_newline)
 
     # remove quotes
-    df["text"] = df["review"].str.replace('"', "")
-    test["text"] = test["review"].str.replace('"', "")
+    df["text"] = (
+        "Benefits: <cr> "
+        + df["benefits"].str.replace('"', "")
+        + " <cr> Side effects: <cr> "
+        + df["sideEffects"].str.replace('"', "")
+        + " <cr> Overall comments: <cr> "
+        + df["comments"].str.replace('"', "")
+    )
+    test["text"] = (
+        "Benefits: <cr> "
+        + test["benefits"].str.replace('"', "")
+        + " <cr> Side effects: <cr> "
+        + test["sideEffects"].str.replace('"', "")
+        + " <cr> Overall comments: <cr> "
+        + test["comments"].str.replace('"', "")
+    )
 
     # split train and dev into 9:1 ratio
     train = df.sample(frac=0.9, random_state=200)
