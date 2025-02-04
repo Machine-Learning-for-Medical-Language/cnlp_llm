@@ -1,7 +1,7 @@
 # Copied from https://github.com/Machine-Learning-for-Medical-Language/cnlp_transformers/blob/main/src/cnlpt/data/transform_uci_drug.py
 """
 Data Download Source:
-https://archive.ics.uci.edu/dataset/462/drug+review+dataset+drugs+com
+https://archive.ics.uci.edu/dataset/461/drug+review+dataset+druglib+com
 
 Data Source:
 Surya Kallumadi
