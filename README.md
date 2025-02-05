@@ -29,6 +29,7 @@ Clone this repo and install using [uv](https://github.com/astral-sh/uv):
 git clone https://github.com/Machine-Learning-for-Medical-Language/cnlp_llm.git
 cd cnlp_llm
 uv sync
+source .venv/bin/activate
 ```
 
 ### Development Tools
