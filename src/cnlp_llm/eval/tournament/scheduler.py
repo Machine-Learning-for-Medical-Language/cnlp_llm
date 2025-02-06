@@ -23,6 +23,12 @@ class RandomScheduler(Scheduler):
             yield players.pop(), players.pop()
 
 
+class OutsideInScheduler(Scheduler):
+    def get_matches(self, players: Iterable[Player]):
+        players = sorted(players, key=lambda p: p.elo)
+        yield from zip(players[: len(players) // 2], reversed(players))
+
+
 class SlidingScheduler(Scheduler):
     def get_matches(self, players):
         players = sorted(players, key=lambda p: p.elo)
