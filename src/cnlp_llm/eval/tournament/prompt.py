@@ -22,7 +22,7 @@ class ComparisonPrompt:
             p2_idx = judgement.find(self.p2_indicator)
 
             if p1_idx != p2_idx:
-                if p2_idx == -1 or p1_idx < p2_idx:
+                if p2_idx == -1 or -1 < p1_idx < p2_idx:
                     return "p1"
                 else:
                     return "p2"
