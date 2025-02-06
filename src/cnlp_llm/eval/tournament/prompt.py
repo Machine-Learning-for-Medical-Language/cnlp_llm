@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass
 from typing import Literal
 
@@ -10,6 +11,12 @@ class ComparisonPrompt:
     p1_indicator: str
     p2_indicator: str
     extraction_strategy: Literal["first", "last"] = "first"
+
+    @classmethod
+    def from_file(cls, filepath: str):
+        with open(filepath) as f:
+            file_json = json.load(f)
+        return ComparisonPrompt(**file_json)
 
     def get_prompt(self, sample_1: Sample, sample_2: Sample):
         return self.template.replace("{text1}", str(sample_1.input)).replace(

@@ -6,6 +6,7 @@ from .eval import eval
 from .fine_tune import fine_tune
 from .serve import serve
 from .tokenize import tokenize
+from .tournament import tournament
 
 
 @click.group()
@@ -20,6 +21,7 @@ cli.add_command(eval)
 cli.add_command(serve)
 cli.add_command(fine_tune)
 cli.add_command(tokenize)
+cli.add_command(tournament)
 
 
 def main():
