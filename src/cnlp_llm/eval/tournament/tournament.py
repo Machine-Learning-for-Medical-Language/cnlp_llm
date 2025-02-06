@@ -106,7 +106,7 @@ class Tournament:
                 winner = str(standings[-1])
                 loser = str(standings[0])
                 console.print(
-                    f"[b]Round {round} results:[/b] {auroc=:.3f} {acc=:.3f} {f1=:.3f} {winner=} {loser=}"
+                    f"[b]Round {str(round).rjust(len(str(rounds)))} results:[/b] {auroc=:.3f} {acc=:.3f} {f1=:.3f} {winner=} {loser=}"
                 )
 
                 if auroc > best_metrics["auroc"]:
