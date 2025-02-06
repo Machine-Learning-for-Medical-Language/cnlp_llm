@@ -484,7 +484,7 @@ def tournament(data_file, prompt_file, strategy=RANDOM, rounds=10, max_instances
             old_elo2 = instance2.elo_rating
 
             instance1.update_elo(opponent_elo=instance2.elo_rating, win=(result==matchup[0]))
-            instance2.update_elo(opponent_elo=instance1.elo_rating, win=(result==matchup[1]))
+            instance2.update_elo(opponent_elo=instance1.elo_rating, win=(result==matchup[1])) # TODO(ian) is this intentionally using the updated I1 elo?
 
             # print(f"Instance {matchup[0]} vs Instance {matchup[1]}: Winner is {result}")
             # print(f"  {matchup[0]} elo goes from {old_elo1} to {instance1.elo_rating}")
