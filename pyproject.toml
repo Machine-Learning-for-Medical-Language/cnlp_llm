@@ -19,6 +19,7 @@ dependencies = [
     "rich~=13.9.3",
     "datasets~=3.0.2",
     "scikit-learn>=1.6.1",
+    "networkx>=3.4.2",
 ]
 
 [dependency-groups]

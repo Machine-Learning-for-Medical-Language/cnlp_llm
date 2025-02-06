@@ -3,7 +3,7 @@ import sys
 from cnlp_llm.cli import init_dotenv
 from cnlp_llm.eval import cnlp_dataset
 from cnlp_llm.eval.tournament import ComparisonPrompt, Tournament
-from cnlp_llm.eval.tournament.scheduler import SwissScheduler
+from cnlp_llm.eval.tournament.scheduler import GraphScheduler
 
 if __name__ == "__main__":
     init_dotenv()
@@ -24,4 +24,4 @@ if __name__ == "__main__":
         max_players=None,
     )
 
-    tournament.run(rounds=10, scheduler=SwissScheduler())
+    tournament.run(rounds=20, scheduler=GraphScheduler())
