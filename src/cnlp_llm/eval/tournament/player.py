@@ -31,5 +31,7 @@ class Player:
         player_update(player_1, p2_elo, player_2.player_id, p1_wins)
         player_update(player_2, p1_elo, player_1.player_id, not p1_wins)
 
+        return (p1_elo, player_1.elo), (p2_elo, player_2.elo)
+
     def __str__(self):
         return f"Player {self.player_id} (elo={self.elo:.2f})"

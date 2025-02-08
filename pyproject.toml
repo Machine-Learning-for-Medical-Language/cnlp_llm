@@ -20,6 +20,7 @@ dependencies = [
     "datasets~=3.0.2",
     "scikit-learn>=1.6.1",
     "networkx>=3.4.2",
+    "shortuuid>=1.0.13",
 ]
 
 [dependency-groups]
