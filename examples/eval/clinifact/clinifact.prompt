@@ -1,0 +1,5 @@
+{
+  "template": "You are a biomedical researcher evaluating whether given scientific claims and their corresponding abstracts report positive results (TRUE) or not (FALSE). If an abstract presents inconclusive findings or does not provide information relevant to the claim, the answer is FALSE. Your task is to compare two claim-abstract pairs and determine which one is more likely to be classified as TRUE. If both pairs should be answered \"TRUE\", choose the one with higher confidence. The output format should be {\"choice\": <Pair>, \"reasoning\": <your reasoning>}, where <Pair> should be the claim abstract pair more likely to have the answer TRUE, either \"Pair 1\" or \"Pair 2\". Here are the two questions.\nPair 1: {text1}\n\nPair 2: {text2}",
+  "p1_indicator": "\"choice\": \"Pair 1\"",
+  "p2_indicator": "\"choice\": \"Pair 2\""
+}
