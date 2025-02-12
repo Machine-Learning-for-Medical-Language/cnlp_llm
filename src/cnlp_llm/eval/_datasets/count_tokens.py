@@ -27,24 +27,22 @@ def count_tokens_from_messages(
         num_tokens[role] += len(encoding.encode(role))
         num_tokens[role] += len(encoding.encode(message.text))
 
-    return Counter(num_tokens)
+    return Counter(num_tokens)  # type: ignore
 
 
 def count_tokens_in_eval_log(
     log: EvalLog | str | None = None, tiktoken_encoding_name="o200k_base"
-):
+) -> Counter[Literal["system", "user", "assistant", "tool"]]:
     if log is None:
         log = list_eval_logs()[-1].name
     if isinstance(log, str):
         log = read_eval_log(log)
-    counts: Counter[Literal["system", "user", "assistant", "tool"]] = Counter(
-        {"system": 0, "user": 0, "assistant": 0, "tool": 0}
-    )
-    for sample in log.samples:
+    counts = Counter({"system": 0, "user": 0, "assistant": 0, "tool": 0})
+    for sample in log.samples or []:
         counts.update(
             count_tokens_from_messages(sample.messages, tiktoken_encoding_name)
         )
-    return counts
+    return counts  # type: ignore
 
 
 def get_dataset_token_counts(

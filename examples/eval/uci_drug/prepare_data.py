@@ -58,14 +58,16 @@ def main():
 
     # read-in files
     df = pd.read_csv(
-        input_path / TRAIN_FILE, 
-        sep="\t", usecols=["rating", "benefitsReview", "sideEffectsReview", "commentsReview"],
+        input_path / TRAIN_FILE,
+        sep="\t",
+        usecols=["rating", "benefitsReview", "sideEffectsReview", "commentsReview"],
         dtype={"benefitsReview": str, "sideEffectsReview": str, "commentsReview": str},
         keep_default_na=False,
     )
     test = pd.read_csv(
-        input_path / TEST_FILE, 
-        sep="\t", usecols=["rating", "benefitsReview", "sideEffectsReview", "commentsReview"],
+        input_path / TEST_FILE,
+        sep="\t",
+        usecols=["rating", "benefitsReview", "sideEffectsReview", "commentsReview"],
         dtype={"benefitsReview": str, "sideEffectsReview": str, "commentsReview": str},
         keep_default_na=False,
     )

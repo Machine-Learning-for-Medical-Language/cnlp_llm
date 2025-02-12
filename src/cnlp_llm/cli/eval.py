@@ -48,6 +48,6 @@ def eval(eval_args):
         console.print("Dry run complete.")
         counts = count_tokens_in_eval_log()
         console.print("Token counts:")
-        for role in ["system", "user", "assistant", "tool"]:
+        for role in ("system", "user", "assistant", "tool"):
             console.print(f"  {role.ljust(9)} - {counts[role]}")
         console.print(f"  [b]{'total'.ljust(9)}[/] - {counts.total()}")

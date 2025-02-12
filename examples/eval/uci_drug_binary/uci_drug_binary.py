@@ -1,12 +1,11 @@
 import sys
 
-from cnlp_llm.eval import cnlp_dataset
-
-from inspect_ai import Task
+from inspect_ai import Task, task
 from inspect_ai import eval as inspect_eval
-from inspect_ai import task
 from inspect_ai.scorer import match
 from inspect_ai.solver import generate, system_message
+
+from cnlp_llm.eval import cnlp_dataset
 
 SYSTEM_MESSAGE = """
 Please read the following drug review and rate the satisfaction as Low or High.
