@@ -46,3 +46,11 @@ class ComparisonPrompt:
                     return "p2"
             else:
                 return None
+
+    def to_dict(self):
+        return {
+            "template": self.template,
+            "p1_indicator": self.p1_indicator,
+            "p2_indicator": self.p2_indicator,
+            "extraction_strategy": self.extraction_strategy,
+        }

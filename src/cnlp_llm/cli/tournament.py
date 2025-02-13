@@ -1,5 +1,3 @@
-import logging
-
 import click
 
 from ..eval.tournament import ComparisonPrompt, Tournament
@@ -54,13 +52,8 @@ SCHEDULERS = {
 @click.option(
     "--log-dir",
     type=str,
+    required=True,
     envvar=["CNLP_TOURNAMENT_LOG_DIR"],
-    help="Directory to write the tournament log.",
-)
-@click.option(
-    "--debug",
-    is_flag=True,
-    default=False,
     help="Directory to write the tournament log.",
 )
 @click.option(
@@ -74,8 +67,7 @@ def tournament(
     model_name: str,
     rounds: int,
     scheduler: str,
-    log_dir: str | None = None,
-    debug: bool = False,
+    log_dir: str,
     limit: int | None = None,
 ):
     dataset = try_load_cnlp_dataset(dataset_file, task)
@@ -85,9 +77,8 @@ def tournament(
         dataset=dataset,
         sample_to_binary=lambda s: s.target == pos_label,
         comparison_prompt=comparison_prompt,
-        max_players=limit,
         log_dir=log_dir,
-        log_level=logging.DEBUG if debug else logging.INFO,
+        max_players=limit,
     )
 
     tournament.run(rounds=rounds, scheduler=SCHEDULERS[scheduler]())
