@@ -10,7 +10,7 @@ from cnlp_llm.cli.serve import create_task_server
 @task
 def template_task(template: str):
     return Task(
-        dataset=[],
+        dataset=None,
         solver=[prompt_template(template)],
     )
 
