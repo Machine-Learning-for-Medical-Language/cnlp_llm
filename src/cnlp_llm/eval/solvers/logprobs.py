@@ -33,6 +33,7 @@ def seq_prob_multiple_choice() -> Solver:
             for choice, prob in sorted(
                 zip(state.choices, choice_probs),
                 key=lambda tup: tup[1],
+                reverse=True,
             )
         ]
 
