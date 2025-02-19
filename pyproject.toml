@@ -7,17 +7,17 @@ name = "cnlp_llm"
 version = "0.1.0"
 description = "LLM training and evaluation for clinical NLP"
 readme = "README.md"
-requires-python = "~=3.10"
+requires-python = ">=3.10, <3.13"
 dependencies = [
-    "inspect-ai~=0.3",
+    "inspect-ai~=0.3.68",
     "openai~=1.44",
-    "click~=8.1",
-    "trl~=0.10",
-    "fastapi~=0.114",
-    "uvicorn~=0.30",
-    "tiktoken>=0.8.0",
-    "rich>=13.9.3",
-    "datasets>=3.0.2",
+    "click~=8.1.7",
+    "trl~=0.12.1",
+    "fastapi~=0.114.0",
+    "uvicorn~=0.32",
+    "tiktoken~=0.8.0",
+    "rich~=13.9.3",
+    "datasets~=3.0.2",
 ]
 
 [dependency-groups]

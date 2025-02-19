@@ -9,7 +9,7 @@ from inspect_ai.model._providers.hf import HuggingFaceAPI
 from inspect_ai.model._providers.util.chatapi import chat_api_input
 from inspect_ai.solver import Generate, Solver, TaskState, solver
 from inspect_ai.tool import ToolInfo
-from transformers import PreTrainedModel
+from transformers import PreTrainedModel, PreTrainedTokenizer
 
 
 @solver
@@ -68,8 +68,8 @@ async def get_choices_logprobs(
             "Only the Huggingface API is supported for evaluating sequence probabilities."
         )
 
-    model: PreTrainedModel = model_api.model
-    tokenizer = model_api.tokenizer
+    model: PreTrainedModel = model_api.model  # type: ignore
+    tokenizer: PreTrainedTokenizer = model_api.tokenizer  # type: ignore
     chat_template = model_api.chat_template
 
     # convert inspect ChatMessages to huggingface format
