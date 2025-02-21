@@ -185,7 +185,7 @@ class TournamentLog:
         ex_val: BaseException | None,
         ex_tb: TracebackType | None,
     ):
-        self.end_time = datetime.now()
+        self.finish_time = datetime.now()
         if ex_type or ex_val:
             self.error = dict(
                 type=ex_type.__name__ if ex_type else None,
