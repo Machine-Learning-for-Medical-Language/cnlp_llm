@@ -1,12 +1,8 @@
-import asyncio
 import logging
 import os
 from datetime import datetime
 
 import click
-from inspect_ai._cli.util import parse_cli_args
-from inspect_ai.model import ChatMessage, ChatMessageUser, GenerateConfig, get_model
-from rich.console import Console
 
 logger = logging.getLogger(__name__)
 
@@ -92,6 +88,11 @@ def chat(
     m: tuple[str] | None = None,
 ):
     """Start an interactive chat session with a model."""
+    import asyncio
+
+    from inspect_ai._cli.util import parse_cli_args
+    from inspect_ai.model import ChatMessage, ChatMessageUser, GenerateConfig, get_model
+    from rich.console import Console
 
     console = Console()
     _logger_init()

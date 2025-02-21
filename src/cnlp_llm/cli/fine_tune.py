@@ -1,8 +1,6 @@
 import subprocess
 
 import click
-from trl.commands.scripts import dpo as trl_dpo
-from trl.commands.scripts import sft as trl_sft
 
 
 @click.group("finetune")
@@ -20,6 +18,8 @@ def fine_tune():
 @click.argument("sft_args", nargs=-1, type=click.UNPROCESSED)
 def sft(sft_args):
     "Supervised fine-tuning via `trl sft`"
+    from trl.commands.scripts import sft as trl_sft
+
     command = ["python", trl_sft.__file__] + list(sft_args)
     subprocess.run(command)
 
@@ -33,5 +33,7 @@ def sft(sft_args):
 @click.argument("dpo_args", nargs=-1, type=click.UNPROCESSED)
 def dpo(dpo_args):
     "DPO fine-tuning via `trl dpo`"
+    from trl.commands.scripts import dpo as trl_dpo
+
     command = ["python", trl_dpo.__file__] + list(dpo_args)
     subprocess.run(command)

@@ -1,10 +1,4 @@
-import subprocess
-
 import click
-from inspect_ai.model._providers.mockllm import MockLLM
-
-from cnlp_llm.console import console
-from cnlp_llm.eval._datasets.count_tokens import count_tokens_in_eval_log
 
 
 @click.command(context_settings=dict(ignore_unknown_options=True))
@@ -15,6 +9,13 @@ def eval(eval_args):
 
     Use --dry-run to run the task with a dummy model and count tokens.
     """
+    import subprocess
+
+    from inspect_ai.model._providers.mockllm import MockLLM
+
+    from cnlp_llm.console import console
+    from cnlp_llm.eval._datasets.count_tokens import count_tokens_in_eval_log
+
     args = list(eval_args)
     if len(args) == 0:
         args = ["--help"]

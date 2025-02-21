@@ -1,15 +1,4 @@
-from pathlib import Path
-
 import click
-import uvicorn
-from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
-from fastapi.staticfiles import StaticFiles
-from inspect_ai import eval as task_eval
-from inspect_ai._cli.util import parse_cli_args
-from inspect_ai._eval.loader import load_task_spec
-from inspect_ai.dataset import MemoryDataset, Sample
-from inspect_ai.model import ModelName, get_model
 
 
 def create_task_server(
@@ -19,7 +8,18 @@ def create_task_server(
     model_name: str | None = None,
     m: tuple[str] | None = None,
     t: tuple[str] | None = None,
-) -> FastAPI:
+):
+    from pathlib import Path
+
+    from fastapi import FastAPI
+    from fastapi.responses import RedirectResponse
+    from fastapi.staticfiles import StaticFiles
+    from inspect_ai import eval as task_eval
+    from inspect_ai._cli.util import parse_cli_args
+    from inspect_ai._eval.loader import load_task_spec
+    from inspect_ai.dataset import MemoryDataset, Sample
+    from inspect_ai.model import ModelName, get_model
+
     model_args = parse_cli_args(m)
     task_args = parse_cli_args(t)
 
@@ -114,6 +114,8 @@ def serve(
     t: tuple[str] | None = None,
 ):
     "Start a FastAPI server to serve a task. TASK_SPEC is a path to a function that returns a Task and is decorated with @task."
+    import uvicorn
+
     app = create_task_server(
         task_spec,
         log_dir,
