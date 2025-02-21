@@ -1,5 +1,4 @@
 import click
-from inspect_ai._util.dotenv import init_dotenv
 
 from .chat import chat
 from .eval import eval
@@ -10,10 +9,13 @@ from .tournament import tournament
 
 
 @click.group()
-def cli():
+@click.pass_context
+def cli(ctx: click.Context):
     """Chat with, evaluate, and fine-tune LLMs."""
-    init_dotenv()
-    pass
+    if ctx.invoked_subcommand is not None:
+        from inspect_ai._util.dotenv import init_dotenv
+
+        init_dotenv()
 
 
 cli.add_command(chat)

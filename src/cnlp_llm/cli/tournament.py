@@ -1,23 +1,5 @@
 import click
 
-from ..eval.tournament import ComparisonPrompt, Tournament
-from ..eval.tournament.scheduler import (
-    GraphScheduler,
-    OutsideInScheduler,
-    RandomScheduler,
-    SlidingScheduler,
-    SwissScheduler,
-)
-from .utils import try_load_cnlp_dataset
-
-SCHEDULERS = {
-    "random": RandomScheduler,
-    "outside-in": OutsideInScheduler,
-    "sliding": SlidingScheduler,
-    "swiss": SwissScheduler,
-    "graph": GraphScheduler,
-}
-
 
 @click.command()
 @click.argument("dataset_file", type=click.Path(exists=True, dir_okay=False))
@@ -45,7 +27,9 @@ SCHEDULERS = {
 )
 @click.option(
     "--scheduler",
-    type=click.Choice(list(SCHEDULERS.keys()), case_sensitive=False),
+    type=click.Choice(
+        ["random", "outside-in", "sliding", "swiss", "graph"], case_sensitive=False
+    ),
     default="graph",
     help="Tournament scheduler to use.",
 )
@@ -70,6 +54,24 @@ def tournament(
     log_dir: str,
     limit: int | None = None,
 ):
+    from ..eval.tournament import ComparisonPrompt, Tournament
+    from ..eval.tournament.scheduler import (
+        GraphScheduler,
+        OutsideInScheduler,
+        RandomScheduler,
+        SlidingScheduler,
+        SwissScheduler,
+    )
+    from .utils import try_load_cnlp_dataset
+
+    schedulers = {
+        "random": RandomScheduler,
+        "outside-in": OutsideInScheduler,
+        "sliding": SlidingScheduler,
+        "swiss": SwissScheduler,
+        "graph": GraphScheduler,
+    }
+
     dataset = try_load_cnlp_dataset(dataset_file, task)
     comparison_prompt = ComparisonPrompt.from_file(comparison_prompt_file)
     tournament = Tournament(
@@ -81,4 +83,4 @@ def tournament(
         max_players=limit,
     )
 
-    tournament.run(rounds=rounds, scheduler=SCHEDULERS[scheduler]())
+    tournament.run(rounds=rounds, scheduler=schedulers[scheduler]())
