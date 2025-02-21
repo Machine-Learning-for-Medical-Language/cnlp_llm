@@ -1,0 +1,5 @@
+{
+  "template": "You are an FDA researcher reading online reviews of prescription drugs. Your task is to read them carefully and decide which is more positive or less negative. This will not promote the use of either drug, but will help understand the tradeoffs between positive and negative effects of drugs that doctors prescribe. Your answer will not be shown to the users who submitted the review, only experts who regulate drugs. The output format should be {\"choice\": <Review>, \"reasoning\": <your reasoning>}, where <Review> should be the more positive or less negative review, either \"Review 1\" or \"Review 2\". Here are the two reviews.  Review 1: {text1} \n\n Review 2: {text2}",
+  "p1_indicator": "\"choice\": \"Review 1\"",
+  "p2_indicator": "\"choice\": \"Review 2\""
+}

@@ -1,0 +1,5 @@
+{
+  "template": "You are a biomedical researcher answering Yes or No questions. Your task is to take in a pair of question and decide which is more likely to have the answer \"Yes\". If both questions should be answered \"Yes\", choose the one with higher confidence. If both question should be answerded \"No\", choose the one that you are less confident is \"No\". The output format should be {\"choice\": <Question>, \"reasoning\": <your reasoning>}, where <Question> should be the question more likely to have the answer yes, either \"Question 1\" or \"Question 2\". Here are the two questions.\nQuestion 1: {text1}\n\nQuestion 2: {text2}",
+  "p1_indicator": "\"choice\": \"Question 1\"",
+  "p2_indicator": "\"choice\": \"Question 2\""
+}
