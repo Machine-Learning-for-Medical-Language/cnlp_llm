@@ -11,59 +11,45 @@ https://www.nature.com/articles/s41467-024-53081-z#data-availability
 
 import os
 import sys
-import json
 import csv
 
 from pathlib import Path
-import random
 import pandas as pd
 
 VERSION = 12
 
-def datareader(
-    originalFilePath=".", 
-    version=VERSION):
+
+def datareader(originalFilePath=".", version=VERSION):
     """
     Finds files and read them
     """
 
-    train_path = os.path.join(originalFilePath, f"train_set.csv")
+    train_path = os.path.join(originalFilePath, "train_set.csv")
     train_data = pd.read_csv(
-        train_path,
-        sep=",",
-        quoting=1,
-        quotechar='"',
-        escapechar="\\",
-        engine="python")
+        train_path, sep=",", quoting=1, quotechar='"', escapechar="\\", engine="python"
+    )
 
-    dev_path = os.path.join(originalFilePath, f"validation_set.csv")
+    dev_path = os.path.join(originalFilePath, "validation_set.csv")
     dev_data = pd.read_csv(
-        dev_path,
-        sep=",",
-        quoting=1,
-        quotechar='"',
-        escapechar="\\",
-        engine="python")
-    
-    test_path = os.path.join(originalFilePath, f"test_set.csv")
+        dev_path, sep=",", quoting=1, quotechar='"', escapechar="\\", engine="python"
+    )
+
+    test_path = os.path.join(originalFilePath, "test_set.csv")
     test_data = pd.read_csv(
-        test_path,
-        sep=",",
-        quoting=1,
-        quotechar='"',
-        escapechar="\\",
-        engine="python")
+        test_path, sep=",", quoting=1, quotechar='"', escapechar="\\", engine="python"
+    )
 
     return train_data, dev_data, test_data
-    
+
 
 def sanity_check(
-    train_data, dev_data, test_data,
-    ):
-
+    train_data,
+    dev_data,
+    test_data,
+):
     train_ids = set(train_data["index"].to_list())
     dev_ids = set(dev_data["index"].to_list())
-    test_ids =set(test_data["index"].to_list())
+    test_ids = set(test_data["index"].to_list())
 
     # Check for overlapping IDs
     train_dev_overlap = train_ids & dev_ids
@@ -79,34 +65,36 @@ def sanity_check(
         "dev_test_overlap": dev_test_overlap,
         "total_unique_ids": total_unique_ids,
         "total_expected": total_expected,
-        "is_valid": not (train_dev_overlap or train_test_overlap or dev_test_overlap) and total_unique_ids == total_expected
+        "is_valid": not (train_dev_overlap or train_test_overlap or dev_test_overlap)
+        and total_unique_ids == total_expected,
     }
+
 
 def to_boolean(label):
     if int(label) == 1:
         return "TRUE"
     elif int(label) == 0 or int(label) == 2:
         return "FALSE"
-    #elif int(label) == 2:
+    # elif int(label) == 2:
     #    return "NONE"
     else:
         raise Exception(f"Unexpected label in dataset! {label}")
 
-def clean_text(text):
-    return " ".join(text.splitlines()).replace("\t", " ").replace("  ", " ").replace("  ", " ")
 
-def form_pair(claim, abstract)-> str:
+def clean_text(text):
+    return (
+        " ".join(text.splitlines())
+        .replace("\t", " ")
+        .replace("  ", " ")
+        .replace("  ", " ")
+    )
+
+
+def form_pair(claim, abstract) -> str:
     # Note that title is not used
 
-    return_str = " ".join(
-        [
-            "## Input: Claim:",
-            claim,
-            "Abstract:",
-            abstract
-        ])
+    return_str = " ".join(["## Input: Claim:", claim, "Abstract:", abstract])
     return clean_text(return_str)
-
 
 
 def clean_data(data):
@@ -114,19 +102,22 @@ def clean_data(data):
     remove unnecessary data in dictionary
     """
 
-    output=[]
+    output = []
     for idx, instance in data.iterrows():
-        output.append({
-            "id":instance["index"],
-            "text":form_pair(
-                claim=clean_text(instance["claim"]), 
-                abstract=clean_text(instance["article_abstract"])
-            ),
-            "label":to_boolean(instance["label"])
-        })
+        output.append(
+            {
+                "id": instance["index"],
+                "text": form_pair(
+                    claim=clean_text(instance["claim"]),
+                    abstract=clean_text(instance["article_abstract"]),
+                ),
+                "label": to_boolean(instance["label"]),
+            }
+        )
     assert len(data) == len(output)
 
     return output
+
 
 def main(args):
     if len(args) < 2:
@@ -135,7 +126,9 @@ def main(args):
 
     output_path = Path(sys.argv[-1])
 
-    train_data, dev_data, test_data = datareader(originalFilePath=args[0], version=VERSION)
+    train_data, dev_data, test_data = datareader(
+        originalFilePath=args[0], version=VERSION
+    )
 
     sanity_report = sanity_check(train_data, dev_data, test_data)
     print(f"sanity_report: {sanity_report}")
@@ -145,15 +138,16 @@ def main(args):
         cleaned_data = clean_data(eval(data_name))
         cleaned_data_df = pd.DataFrame(cleaned_data)
         cleaned_data_df.to_csv(
-        os.path.join(output_path, f"{data_name}.tsv"),
-        sep="\t",
-        encoding="utf-8",
-        index=False,
-        header=True,
-        quoting=csv.QUOTE_NONE,
-        escapechar=None,
+            os.path.join(output_path, f"{data_name}.tsv"),
+            sep="\t",
+            encoding="utf-8",
+            index=False,
+            header=True,
+            quoting=csv.QUOTE_NONE,
+            escapechar=None,
         )
         print(f"{data_name} written. # of instances: {len(cleaned_data_df)}")
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])

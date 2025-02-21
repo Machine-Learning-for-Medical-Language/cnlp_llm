@@ -23,6 +23,7 @@ Please read the following sentence and decide whether it is "acceptable" in a li
 # Please read the following sentence and decide whether it is "acceptable" in a linguistic sense (i.e., grammatical). Don't explain your reasoning, just answer "Yes" (acceptable) or "No" (unacceptable) on a new line. The consequences for wrongly guessing "No" are worse than the consequences for wrongly guessing "Yes".
 # """
 
+
 @task
 def cola_task(dataset_file: str):
     return Task(

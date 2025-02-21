@@ -83,8 +83,8 @@ class GraphScheduler(Scheduler):
             self.edges = {pid: [] for pid in player_dict.keys()}
 
         # use networkx to get shortest distances between each pair of players
-        distance_dict: dict[str, dict[str, int]] = dict(
-            nx.all_pairs_shortest_path_length(nx.from_dict_of_lists(self.edges))
+        distance_dict: dict[str, dict[str, int]] = dict(  # type: ignore
+            nx.all_pairs_shortest_path_length(nx.from_dict_of_lists(self.edges))  # type: ignore
         )
 
         # get distance for each unique combination of players,

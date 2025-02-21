@@ -5,7 +5,7 @@ from cnlp_llm.eval import cnlp_dataset
 from inspect_ai import Task
 from inspect_ai import eval as inspect_eval
 from inspect_ai import task
-from inspect_ai.scorer import match, includes, f1, multi_scorer
+from inspect_ai.scorer import match
 from inspect_ai.solver import generate, system_message
 
 
@@ -26,6 +26,7 @@ def clinifact_task(dataset_file: str):
         # scorer=includes(),
         scorer=match(location="any"),
     )
+
 
 if __name__ == "__main__":
     dataset_file = sys.argv[1]
