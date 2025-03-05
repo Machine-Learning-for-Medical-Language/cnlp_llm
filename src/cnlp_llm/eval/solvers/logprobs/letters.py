@@ -8,7 +8,7 @@ from inspect_ai.solver import Generate, Solver, TaskState, solver
 from .common import get_choices_logprobs
 
 TEMPLATE = """
-Answer the following multiple choice question. The entire content of your response should be a single letter, either {letter_choices}.
+Answer the following multiple choice question. The entire content of your response should be of the following format: 'ANSWER: $LETTER' (without quotes) where LETTER is one of {letter_choices}.
 
 {question}
 
@@ -41,14 +41,14 @@ def letter_prob_multiple_choice() -> Solver:
         )
 
         choice_messages: list[ChatMessage] = [
-            ChatMessageAssistant(content=letter) for letter in letters
+            ChatMessageAssistant(content=f"ANSWER: {letter}") for letter in letters
         ]
 
         choice_probs: list[float] = await get_choices_logprobs(
             model, prefix_messages=state.messages, choices=choice_messages
         )
         ranked = sorted(
-            zip(state.choices, choice_probs, letters),
+            zip(state.choices, choice_probs, choice_messages),
             key=lambda tup: tup[1],
             reverse=True,
         )
@@ -58,7 +58,7 @@ def letter_prob_multiple_choice() -> Solver:
         for c in rejected:
             c.correct = False
 
-        state.messages.append(ChatMessageAssistant(content=ranked[0][2]))
+        state.messages.append(ranked[0][2])
 
         # update metadata with probabilities values
         if "letter_probs" not in state.metadata:
