@@ -1,6 +1,7 @@
 from inspect_ai.model import (
     ChatMessage,
     ChatMessageAssistant,
+    Model,
     get_model,
 )
 from inspect_ai.solver import Generate, Solver, TaskState, solver
@@ -26,14 +27,14 @@ def make_prompt(question: str, choices: list[tuple[str, str]]):
 
 
 @solver
-def letter_prob_multiple_choice() -> Solver:
+def letter_prob_multiple_choice(model: str | Model | None = None) -> Solver:
     # Defer initialization to avoid tokenizers parallelism warning
     generator: BatchedLogprobsGenerator | None = None
 
     async def solve(state: TaskState, generate: Generate) -> TaskState:
         nonlocal generator
         if generator is None:
-            generator = BatchedLogprobsGenerator(get_model())
+            generator = BatchedLogprobsGenerator(get_model(model))
 
         if not state.choices:
             raise ValueError(
