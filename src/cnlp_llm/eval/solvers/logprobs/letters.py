@@ -1,14 +1,15 @@
 from inspect_ai.model import (
     ChatMessage,
     ChatMessageAssistant,
+    Model,
     get_model,
 )
 from inspect_ai.solver import Generate, Solver, TaskState, solver
 
-from .common import get_choices_logprobs
+from .logprobs_generator import BatchedLogprobsGenerator
 
 TEMPLATE = """
-Answer the following multiple choice question. The entire content of your response should be a single letter, either {letter_choices}.
+Answer the following multiple choice question. The entire content of your response should be of the following format: 'ANSWER: $LETTER' (without quotes) where LETTER is one of {letter_choices}.
 
 {question}
 
@@ -26,12 +27,19 @@ def make_prompt(question: str, choices: list[tuple[str, str]]):
 
 
 @solver
-def letter_prob_multiple_choice() -> Solver:
-    async def solve(state: TaskState, generate: Generate) -> TaskState:
-        if not state.choices:
-            raise ValueError("The multiple_choice solver requires samples with choices")
+def letter_prob_multiple_choice(model: str | Model | None = None) -> Solver:
+    # Defer initialization to avoid tokenizers parallelism warning
+    generator: BatchedLogprobsGenerator | None = None
 
-        model = get_model(str(state.model))
+    async def solve(state: TaskState, generate: Generate) -> TaskState:
+        nonlocal generator
+        if generator is None:
+            generator = BatchedLogprobsGenerator(get_model(model))
+
+        if not state.choices:
+            raise ValueError(
+                "The letter_prob_multiple_choice solver requires samples with choices"
+            )
 
         letters = [chr(ord("A") + i) for i in range(len(state.choices))]
         choice_values = [choice.value for choice in state.choices]
@@ -41,14 +49,15 @@ def letter_prob_multiple_choice() -> Solver:
         )
 
         choice_messages: list[ChatMessage] = [
-            ChatMessageAssistant(content=letter) for letter in letters
+            ChatMessageAssistant(content=f"ANSWER: {letter}") for letter in letters
         ]
 
-        choice_probs: list[float] = await get_choices_logprobs(
-            model, prefix_messages=state.messages, choices=choice_messages
+        choice_probs = await generator.compare_logprobs(
+            choice_messages, prepend=state.messages
         )
+
         ranked = sorted(
-            zip(state.choices, choice_probs, letters),
+            zip(state.choices, choice_probs, choice_messages),
             key=lambda tup: tup[1],
             reverse=True,
         )
@@ -58,7 +67,7 @@ def letter_prob_multiple_choice() -> Solver:
         for c in rejected:
             c.correct = False
 
-        state.messages.append(ChatMessageAssistant(content=ranked[0][2]))
+        state.messages.append(ranked[0][2])
 
         # update metadata with probabilities values
         if "letter_probs" not in state.metadata:
