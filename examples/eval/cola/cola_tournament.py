@@ -1,6 +1,8 @@
+import os
 import sys
 
-from cnlp_llm.cli import init_dotenv
+from inspect_ai._util.dotenv import init_dotenv
+
 from cnlp_llm.eval import cnlp_dataset
 from cnlp_llm.eval.tournament import ComparisonPrompt, Tournament
 from cnlp_llm.eval.tournament.scheduler import GraphScheduler
@@ -21,6 +23,7 @@ if __name__ == "__main__":
         dataset=cola_dataset,
         sample_to_binary=lambda sample: sample.target == "Yes",
         comparison_prompt=comparison_prompt,
+        log_dir=os.getenv("CNLP_TOURNAMENT_LOG_DIR", "logs"),
         max_players=None,
     )
 

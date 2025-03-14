@@ -11,19 +11,19 @@ When using this dataset, you agree that you
 1) don't distribute the data to anyone else
 """
 
-import os
-import sys
-import json
 import csv
-
-from pathlib import Path
+import json
+import os
 import random
+import sys
+from pathlib import Path
+
 import pandas as pd
 
 VERSION = 12
 
 
-def bioasq_datareader(originalFilePath="resources", version=VERSION):
+def bioasq_datareader(original_file_path="resources", version=VERSION):
     """
     Finds files and read them
     """
@@ -31,12 +31,10 @@ def bioasq_datareader(originalFilePath="resources", version=VERSION):
     train_raw_data = list()  # raw_input_data
     test_data = list()
 
-    with open(
-        os.path.join(originalFilePath, f"training{version}b_new.json"), "r"
-    ) as fp:
+    with open(os.path.join(original_file_path, f"training{version}b_new.json")) as fp:
         train_raw_data = json.load(fp)["questions"]
 
-    file_list = os.listdir(originalFilePath)
+    file_list = os.listdir(original_file_path)
     test_file_list = [
         filename
         for filename in file_list
@@ -44,7 +42,7 @@ def bioasq_datareader(originalFilePath="resources", version=VERSION):
     ]
 
     for filename in test_file_list:
-        with open(os.path.join(originalFilePath, filename), "r") as fp:
+        with open(os.path.join(original_file_path, filename)) as fp:
             test_data.extend(json.load(fp)["questions"])
 
     return train_raw_data, test_data
@@ -120,16 +118,16 @@ def bioasq_clean_data(data):
     remove unnecessary data in dictionary
     """
 
-    output = []
-    for question in data:
-        output.append(
-            {
-                "id": question["id"],
-                "text": question["body"].replace("\t", " ").splitlines()[0],  # question
-                "exact_answer": question["exact_answer"],
-                "label": to_boolean(question["exact_answer"]),
-            }
-        )
+    output = [
+        {
+            "id": question["id"],
+            "text": question["body"].replace("\t", " ").splitlines()[0],  # question
+            "exact_answer": question["exact_answer"],
+            "label": to_boolean(question["exact_answer"]),
+        }
+        for question in data
+    ]
+
     assert len(data) == len(output)
 
     return output
@@ -143,7 +141,7 @@ def main(args):
     output_path = Path(sys.argv[-1])
 
     train_raw_data, test_data = bioasq_datareader(
-        originalFilePath=args[0], version=VERSION
+        original_file_path=args[0], version=VERSION
     )
     train_raw_data, test_data = bioasq_select_qtype(
         train_raw_data, test_data, q_type="yesno"

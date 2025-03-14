@@ -80,7 +80,7 @@ class GraphScheduler(Scheduler):
 
         # construct graph if it's the first round
         if len(self.edges) == 0:
-            self.edges = {pid: [] for pid in player_dict.keys()}
+            self.edges = {pid: [] for pid in player_dict}
 
         # use networkx to get shortest distances between each pair of players
         distance_dict: dict[str, dict[str, int]] = dict(  # type: ignore

@@ -1,6 +1,7 @@
 import sys
-import pandas as pd
 from os.path import join
+
+import pandas as pd
 
 
 def to_boolean(label):

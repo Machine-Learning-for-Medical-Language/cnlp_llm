@@ -42,7 +42,7 @@ def eval(eval_args):
             if not (choice.lower() == "y" or choice == ""):
                 return
 
-    command = ["inspect", "eval"] + args
+    command = ["inspect", "eval", *args]
     subprocess.run(command)
 
     if dry_run:

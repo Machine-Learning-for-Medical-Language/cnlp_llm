@@ -6,7 +6,6 @@ import click
 @click.group("finetune")
 def fine_tune():
     """Fine-tune a model."""
-    pass
 
 
 @fine_tune.command(
@@ -20,7 +19,7 @@ def sft(sft_args):
     "Supervised fine-tuning via `trl sft`"
     from trl.commands.scripts import sft as trl_sft
 
-    command = ["python", trl_sft.__file__] + list(sft_args)
+    command = ["python", trl_sft.__file__, *list(sft_args)]
     subprocess.run(command)
 
 
@@ -35,5 +34,5 @@ def dpo(dpo_args):
     "DPO fine-tuning via `trl dpo`"
     from trl.commands.scripts import dpo as trl_dpo
 
-    command = ["python", trl_dpo.__file__] + list(dpo_args)
+    command = ["python", trl_dpo.__file__, *list(dpo_args)]
     subprocess.run(command)
