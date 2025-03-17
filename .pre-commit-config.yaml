@@ -19,7 +19,6 @@ repos:
       - id: detect-private-key
       - id: end-of-file-fixer
 -   repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.44.0    
+    rev: v0.44.0
     hooks:
-      - id: markdownlint
-        args: [--disable=MD013] # line length
+      - id: markdownlint-fix
