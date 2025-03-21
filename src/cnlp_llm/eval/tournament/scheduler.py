@@ -62,7 +62,7 @@ class SwissScheduler(Scheduler):
         for group_idx in range(0, len(players), self.group_size):
             for offset in range(self.group_size // 2):
                 p1 = group_idx + offset
-                p2 = group_idx + self.group_size // 2
+                p2 = p1 + (self.group_size // 2)
                 yield players[p1], players[p2]
 
 
