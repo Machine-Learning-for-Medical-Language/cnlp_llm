@@ -1,5 +1,6 @@
 from collections import Counter
-from typing import Iterable, Literal
+from collections.abc import Iterable
+from typing import Literal
 
 import tiktoken
 from inspect_ai.dataset import Dataset

@@ -1,6 +1,7 @@
 import asyncio
 import random
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from inspect_ai.dataset import Dataset, Sample
 from inspect_ai.model import get_model

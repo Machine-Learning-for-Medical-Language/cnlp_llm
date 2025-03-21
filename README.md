@@ -9,17 +9,17 @@ The goal of this library is to consolidate, extend, and provide helpful wrappers
 ## Table of Contents
 
 - [cnlp\_llm](#cnlp_llm)
-  - [Introduction](#introduction)
-  - [Table of Contents](#table-of-contents)
-  - [Installation](#installation)
-    - [Development Tools](#development-tools)
-  - [Training](#training)
-    - [Pretraining (not yet implemented)](#pretraining-not-yet-implemented)
-    - [Fine-tuning](#fine-tuning)
-  - [Chat, Evaluation, and Serving](#chat-evaluation-and-serving)
-    - [Simple Chat REPL](#simple-chat-repl)
-    - [Evaluation](#evaluation)
-    - [Hosting an Inference Server](#hosting-an-inference-server)
+    - [Introduction](#introduction)
+    - [Table of Contents](#table-of-contents)
+    - [Installation](#installation)
+        - [Development Tools](#development-tools)
+    - [Training](#training)
+        - [Pretraining (not yet implemented)](#pretraining-not-yet-implemented)
+        - [Fine-tuning](#fine-tuning)
+    - [Chat, Evaluation, and Serving](#chat-evaluation-and-serving)
+        - [Simple Chat REPL](#simple-chat-repl)
+        - [Evaluation](#evaluation)
+        - [Hosting an Inference Server](#hosting-an-inference-server)
 
 ## Installation
 

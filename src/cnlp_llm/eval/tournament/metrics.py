@@ -8,6 +8,8 @@ from sklearn.metrics import (
     roc_curve,
 )
 
+__all__ = ["get_best_accuracy", "get_best_f1", "roc_auc_score"]
+
 
 def get_best_accuracy(y_true, y_prob):
     # Step 1: Calculate the ROC curve
@@ -44,6 +46,3 @@ def get_best_f1(labels, scores):
     best_index = np.argmax(f1s)
     best_f1 = f1s[best_index]
     return best_f1
-
-
-__all__ = ["roc_auc_score", "get_best_accuracy", "get_best_f1"]

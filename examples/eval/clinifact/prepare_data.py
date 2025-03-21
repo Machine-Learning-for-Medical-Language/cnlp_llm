@@ -9,32 +9,32 @@ https://www.nature.com/articles/s41467-024-53081-z#data-availability
 
 """
 
+import csv
 import os
 import sys
-import csv
-
 from pathlib import Path
+
 import pandas as pd
 
 VERSION = 12
 
 
-def datareader(originalFilePath=".", version=VERSION):
+def datareader(original_file_path=".", version=VERSION):
     """
     Finds files and read them
     """
 
-    train_path = os.path.join(originalFilePath, "train_set.csv")
+    train_path = os.path.join(original_file_path, "train_set.csv")
     train_data = pd.read_csv(
         train_path, sep=",", quoting=1, quotechar='"', escapechar="\\", engine="python"
     )
 
-    dev_path = os.path.join(originalFilePath, "validation_set.csv")
+    dev_path = os.path.join(original_file_path, "validation_set.csv")
     dev_data = pd.read_csv(
         dev_path, sep=",", quoting=1, quotechar='"', escapechar="\\", engine="python"
     )
 
-    test_path = os.path.join(originalFilePath, "test_set.csv")
+    test_path = os.path.join(original_file_path, "test_set.csv")
     test_data = pd.read_csv(
         test_path, sep=",", quoting=1, quotechar='"', escapechar="\\", engine="python"
     )
@@ -127,7 +127,7 @@ def main(args):
     output_path = Path(sys.argv[-1])
 
     train_data, dev_data, test_data = datareader(
-        originalFilePath=args[0], version=VERSION
+        original_file_path=args[0], version=VERSION
     )
 
     sanity_report = sanity_check(train_data, dev_data, test_data)

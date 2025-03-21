@@ -19,7 +19,7 @@ def cnlp_json_dataset(
     encoding: str = "utf-8",
     name: str | None = None,
 ) -> Dataset:
-    with open(json_file, "r", encoding=encoding) as f:
+    with open(json_file, encoding=encoding) as f:
         json_data: dict[str, dict[str, Any]] = json.load(f)
 
     rows = json_data.get("data", None)
@@ -86,7 +86,7 @@ def cnlp_csv_dataset(
     name: str | None = None,
 ) -> Dataset:
     # read and convert samples
-    with open(csv_file, "r", encoding=encoding) as f:
+    with open(csv_file, encoding=encoding) as f:
         # filter out rows with empty values
         valid_data = [
             data

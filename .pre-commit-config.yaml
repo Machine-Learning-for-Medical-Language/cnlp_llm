@@ -1,8 +1,8 @@
 default_language_version:
-  python: python3.10
+  python: python3
 repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.7.1 # same as in pyproject.toml and CI
+  rev: v0.11.0 # same as in pyproject.toml and CI
   hooks:
     # Run the linter.
     - id: ruff
@@ -18,3 +18,7 @@ repos:
       - id: debug-statements
       - id: detect-private-key
       - id: end-of-file-fixer
+-   repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.44.0
+    hooks:
+      - id: markdownlint-fix

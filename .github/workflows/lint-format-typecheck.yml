@@ -7,6 +7,7 @@ on:
     paths:
       - "src/**"
       - "test/**"
+      - "examples/**"
       - "pyproject.toml"
       - ".github/workflows/**"
   pull_request:
@@ -15,6 +16,7 @@ on:
     paths:
       - "src/**"
       - "test/**"
+      - "examples/**"
       - "pyproject.toml"
       - ".github/workflows/**"
 jobs:
@@ -24,11 +26,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/ruff-action@v1
         with:
-          version: 0.7.1 # same as in pre-commit hooks and pyproject.toml
+          version: 0.11.0 # same as in pre-commit hooks and pyproject.toml
           args: check
       - uses: astral-sh/ruff-action@v1
         with:
-          version: 0.7.1 # same as in pre-commit hooks and pyproject.toml
+          version: 0.11.0 # same as in pre-commit hooks and pyproject.toml
           args: format --check
   pyright:
     runs-on: ubuntu-latest
@@ -36,3 +38,19 @@ jobs:
       - uses: jakebailey/pyright-action@v2
         with:
           pylance-version: latest-release
+  markdownlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: tj-actions/changed-files@v46
+        id: changed-files
+        with:
+          files: "**/*.md"
+          separator: ","
+      - uses: DavidAnson/markdownlint-cli2-action@v19
+        if: steps.changed-files.outputs.any_changed == 'true'
+        with:
+          globs: ${{ steps.changed-files.outputs.all_changed_files }}
+          separator: ","

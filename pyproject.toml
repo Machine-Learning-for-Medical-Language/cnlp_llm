@@ -12,7 +12,7 @@ dependencies = [
     "inspect-ai~=0.3.68",
     "openai~=1.44",
     "click~=8.1.7",
-    "trl~=0.12.1",
+    "trl[peft]~=0.12.1",
     "fastapi~=0.114.0",
     "uvicorn~=0.32",
     "tiktoken~=0.8.0",
@@ -26,7 +26,8 @@ dependencies = [
 [dependency-groups]
 lint = [
     "pyright[nodejs]>=1.1.386",
-    "ruff==0.7.1",              # same as in pre-commit hooks
+    "pandas-stubs",
+    "ruff==0.11.0",             # same as in pre-commit hooks and CI
 ]
 test = ["pytest>=8.3.3"]
 dev = [
@@ -49,3 +50,28 @@ useLibraryCodeForTypes = true
 
 [tool.uv.sources]
 cnlp-llm = { workspace = true }
+
+[tool.ruff]
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    # ruff defaults
+    "E4",
+    "E7",
+    "E9",
+    "F",
+    # additional options
+    "I",    # isort
+    "UP",   # pyupgrade
+    "G",    # logging
+    "FA",   # future annotations
+    "N",    # naming conventions
+    "PERF", # performance
+    "RUF",  # misc
+    "PIE",  # misc
+]
+
+ignore = [
+    "G004", # f-strings in logging statements
+]
