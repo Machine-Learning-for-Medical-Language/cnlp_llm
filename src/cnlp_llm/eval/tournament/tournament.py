@@ -4,7 +4,7 @@ from collections.abc import Callable
 from typing import Any
 
 from inspect_ai.dataset import Dataset, Sample
-from inspect_ai.model import get_model
+from inspect_ai.model import GenerateConfig, get_model
 from shortuuid import uuid
 
 from .display import TournamentDisplay
@@ -33,6 +33,7 @@ class Tournament:
         log_dir: str,
         max_players: int | None = None,
         elo_initializer: Callable[[Sample], float] = elo_init_constant,
+        generate_config: GenerateConfig = GenerateConfig(),
     ):
         self.model = get_model(model)
         self.dataset = dataset
@@ -45,6 +46,7 @@ class Tournament:
             pid = str(sample.id or i)
             starting_elo = elo_initializer(sample)
             self.players[pid] = Player(pid, sample, starting_elo)
+        self.generate_config = generate_config
 
     def metrics(self) -> dict[str, Any]:
         labels: list[int] = []
@@ -77,7 +79,9 @@ class Tournament:
         model_output = None
         rematches = 0
         for rematches in range(max_rematches):
-            model_output = await self.model.generate(prompt)
+            model_output = await self.model.generate(
+                prompt, config=self.generate_config
+            )
             winner = self.comparison_prompt.extract_winner(model_output.completion)
             if winner is not None:
                 Player.update_elos(p1, p2, winner == "p1")
