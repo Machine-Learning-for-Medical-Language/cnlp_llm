@@ -43,6 +43,6 @@ def get_best_f1(labels, scores):
             f1 = 2 * precision[ind] * recall[ind] / (precision[ind] + recall[ind])
             f1s.append(f1)
 
-    best_index = np.argmax(f1s)
+    best_index = np.argmax(np.nan_to_num(f1s))
     best_f1 = f1s[best_index]
     return best_f1
