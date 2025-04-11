@@ -85,8 +85,8 @@ def completions(
         "pad_token_id": tokenizer.pad_token_id,
         "do_sample": True,
     }
-    if config.max_tokens is not None:
-        generation_kwargs["max_new_tokens"] = config.max_tokens
+
+    generation_kwargs["max_new_tokens"] = config.max_tokens or 64
     if config.temperature is not None:
         generation_kwargs["temperature"] = config.temperature
     if config.top_p is not None:
