@@ -106,7 +106,7 @@ def completions(
 
     commands = {
         "/help": "Show this help message.",
-        "/quit": "Stop chatting.",
+        "/quit": "Quit the completions interface.",
         "/max-tokens <INT>": "Set the maximum completion length.",
         "/temperature <FLOAT>": "Set the generation temperature.",
     }
