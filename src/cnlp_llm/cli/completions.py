@@ -81,7 +81,10 @@ def completions(
     hf_model: PreTrainedModel = cast(PreTrainedModel, hf_api.model)
     tokenizer: PreTrainedTokenizer = cast(PreTrainedTokenizer, hf_api.tokenizer)
 
-    generation_kwargs: dict[str, Any] = {"pad_token_id": tokenizer.pad_token_id}
+    generation_kwargs: dict[str, Any] = {
+        "pad_token_id": tokenizer.pad_token_id,
+        "do_sample": True,
+    }
     if config.max_tokens is not None:
         generation_kwargs["max_new_tokens"] = config.max_tokens
     if config.temperature is not None:
