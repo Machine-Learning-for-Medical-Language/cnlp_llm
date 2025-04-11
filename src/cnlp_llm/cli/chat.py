@@ -44,7 +44,7 @@ def _logger_init():
     type=str,
     envvar=["CNLP_CHAT_MODEL"],
     required=True,
-    help="Model used to evaluate tasks. Can also be set via INSPECT_EVAL_MODEL environment variable.",
+    help="Model used to evaluate tasks. Can also be set via CNLP_CHAT_MODEL environment variable.",
 )
 @click.option(
     "--model-base-url",
@@ -92,9 +92,10 @@ def chat(
 
     from inspect_ai._cli.util import parse_cli_args
     from inspect_ai.model import ChatMessage, ChatMessageUser, GenerateConfig, get_model
-    from rich.console import Console
+    from rich import markup
 
-    console = Console()
+    from ..console import console
+
     _logger_init()
 
     config = GenerateConfig(
@@ -115,9 +116,11 @@ def chat(
     for k, v in model.config.model_dump().items():
         logger.info(f"{k}: {v}")
 
-    console.print(f"\nChatting with {model_name}.", style="bold")
+    console.print(
+        f"\nChatting with {markup.escape(model_name)}.", style="bold", highlight=False
+    )
     if system_message is not None:
-        console.print(f"System message: [i]'{system_message}'")
+        console.print(f"System message: [i]'{markup.escape(system_message)}'[/]")
     console.print("Type '/quit' to quit, or '/help' for more options.")
 
     commands = {
