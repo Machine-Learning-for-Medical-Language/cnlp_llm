@@ -9,7 +9,7 @@ description = "LLM training and evaluation for clinical NLP"
 readme = "README.md"
 requires-python = ">=3.10, <3.13"
 dependencies = [
-    "inspect-ai~=0.3.68",
+    "inspect-ai~=0.3.103",
     "openai~=1.44",
     "click~=8.1.7",
     "trl[peft]~=0.12.1",
@@ -21,6 +21,7 @@ dependencies = [
     "scikit-learn>=1.6.1",
     "networkx>=3.4.2",
     "shortuuid>=1.0.13",
+    "anyio>=4.8.0",
 ]
 
 [dependency-groups]

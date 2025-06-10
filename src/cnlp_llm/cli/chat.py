@@ -88,8 +88,7 @@ def chat(
     m: tuple[str] | None = None,
 ):
     """Start an interactive chat session with a model."""
-    import asyncio
-
+    import anyio
     from inspect_ai._cli.util import parse_cli_args
     from inspect_ai.model import ChatMessage, ChatMessageUser, GenerateConfig, get_model
     from rich import markup
@@ -133,7 +132,7 @@ def chat(
 
     def generate_with_spinner(messages: list[ChatMessage]):
         with console.status("[i]Generating...", spinner="dots"):
-            return asyncio.run(model.generate(messages))
+            return anyio.run(model.generate, messages)
 
     chat_history: list[ChatMessage] = []
     while True:
