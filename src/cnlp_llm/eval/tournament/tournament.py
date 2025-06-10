@@ -1,10 +1,11 @@
-import asyncio
 import random
 from collections.abc import Callable
 from typing import Any
 
+import anyio
 from inspect_ai.dataset import Dataset, Sample
 from inspect_ai.model import get_model
+from inspect_ai.util import collect
 from shortuuid import uuid
 
 from .display import TournamentDisplay
@@ -136,9 +137,9 @@ class Tournament:
                         log.log_match(result)
                         disp.update()
 
-                    await asyncio.gather(*[run_matchup(*pair) for pair in matchups])
+                    await collect(*[run_matchup(*pair) for pair in matchups])
 
                     log.log_round_end(self.standings(), self.metrics())
 
     def run(self, rounds: int, scheduler: Scheduler):
-        asyncio.run(self.run_async(rounds=rounds, scheduler=scheduler))
+        anyio.run(self.run_async, rounds, scheduler)

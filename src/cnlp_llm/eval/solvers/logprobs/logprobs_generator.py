@@ -1,10 +1,12 @@
-import asyncio
 import functools
+import logging
+from concurrent.futures import Future, TimeoutError
 from dataclasses import dataclass
 from queue import Empty, Queue
 from threading import Thread
 from typing import cast
 
+import anyio
 import torch
 from inspect_ai.model import (
     ChatMessage,
@@ -12,13 +14,16 @@ from inspect_ai.model import (
 )
 from inspect_ai.model._providers.hf import HuggingFaceAPI
 from inspect_ai.tool import ToolInfo
+from inspect_ai.util import collect, trace_action
 from transformers import PreTrainedModel, PreTrainedTokenizer
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
 class _QueueItem:
     input: str
-    future: asyncio.Future[float]
+    future: Future[float]
 
 
 class BatchedLogprobsGenerator:
@@ -31,17 +36,14 @@ class BatchedLogprobsGenerator:
             )
         self.hf_api: HuggingFaceAPI = model.api
 
-        self.model: PreTrainedModel = cast(PreTrainedModel, self.hf_api.model)
-        self.tokenizer: PreTrainedTokenizer = cast(
-            PreTrainedTokenizer, self.hf_api.tokenizer
-        )
+        self.model = cast(PreTrainedModel, self.hf_api.model)
+        self.tokenizer = cast(PreTrainedTokenizer, self.hf_api.tokenizer)
 
         self.batch_size = (
             self.model_config.max_connections or self.hf_api.max_connections()
         )
 
         self.batch_queue: Queue[_QueueItem] = Queue()
-        self.loop = asyncio.get_event_loop()
 
         self.batch_thread = Thread(target=self.get_batch_processor(), daemon=True)
         self.batch_thread.start()
@@ -49,7 +51,6 @@ class BatchedLogprobsGenerator:
     def get_batch_processor(self):
         batch_size = self.batch_size
         batch_queue = self.batch_queue
-        loop = self.loop
         model = self.model
         tokenize = functools.partial(
             self.tokenizer,
@@ -87,17 +88,23 @@ class BatchedLogprobsGenerator:
                     seq_probs = logprobs.sum(dim=-1).tolist()
 
                 for input, prob in zip(inputs, seq_probs):
-                    loop.call_soon_threadsafe(input.future.set_result, prob)
+                    input.future.set_result(prob)
 
         return process
 
     async def get_logprob(self, input: list[ChatMessage], tools: list[ToolInfo] | None):
         input_str = self.hf_api.hf_chat(input, tools or [])
-        future: asyncio.Future[float] = asyncio.Future(loop=self.loop)
+        future: Future[float] = Future()
 
         self.batch_queue.put(_QueueItem(input_str, future))
 
-        return await future
+        with trace_action(logger, "HF Logprobs Generator", "HF Logprobs Generator"):
+            while True:
+                try:
+                    return future.result(timeout=0.01)
+                except TimeoutError:
+                    pass
+                await anyio.sleep(1)
 
     async def compare_logprobs(
         self,
@@ -112,6 +119,6 @@ class BatchedLogprobsGenerator:
             inputs = [[input] for input in cast(list[ChatMessage], inputs)]
 
         inputs = cast(list[list[ChatMessage]], inputs)
-        return await asyncio.gather(
+        return await collect(
             *[self.get_logprob(prepend + input, tools) for input in inputs]
         )
