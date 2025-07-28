@@ -4,7 +4,7 @@ from typing import Any
 
 import anyio
 from inspect_ai.dataset import Dataset, Sample
-from inspect_ai.model import get_model
+from inspect_ai.model import Model, get_model
 from inspect_ai.util import collect
 from shortuuid import uuid
 
@@ -27,7 +27,7 @@ def elo_init_random(sample: Sample):
 class Tournament:
     def __init__(
         self,
-        model: str,
+        model: str | Model,
         dataset: Dataset,
         sample_to_binary: Callable[[Sample], bool],
         comparison_prompt: ComparisonPrompt,
