@@ -19,8 +19,8 @@ import click
     "model_name",
     type=str,
     required=True,
-    envvar=["INSPECT_EVAL_MODEL"],
-    help="Model used to run the tournament. Can also be set via INSPECT_EVAL_MODEL environment variable.",
+    envvar=["CNLP_TOURNAMENT_MODEL"],
+    help="Model used to run the tournament. Can also be set via CNLP_TOURNAMENT_MODEL environment variable.",
 )
 @click.option(
     "--rounds", type=int, required=True, help="The number of tournament rounds to run."
@@ -43,6 +43,13 @@ import click
 @click.option(
     "--limit", type=int, help="Only use a subset of the dataset for the tournament."
 )
+@click.option(
+    "-M",
+    multiple=True,
+    type=str,
+    envvar=["CNLP_TOURNAMENT_MODEL_ARGS"],
+    help="One or more native model arguments (e.g. -M arg=value)",
+)
 def tournament(
     dataset_file: str,
     comparison_prompt_file: str,
@@ -53,7 +60,11 @@ def tournament(
     scheduler: str,
     log_dir: str,
     limit: int | None = None,
+    m: tuple[str] | None = None,
 ):
+    from inspect_ai._cli.util import parse_cli_args
+    from inspect_ai.model import get_model
+
     from ..eval.tournament import ComparisonPrompt, Tournament
     from ..eval.tournament.scheduler import (
         GraphScheduler,
@@ -75,7 +86,7 @@ def tournament(
     dataset = try_load_cnlp_dataset(dataset_file, task)
     comparison_prompt = ComparisonPrompt.from_file(comparison_prompt_file)
     tournament = Tournament(
-        model=model_name,
+        model=get_model(model_name, **parse_cli_args(m)),
         dataset=dataset,
         sample_to_binary=lambda s: s.target == pos_label,
         comparison_prompt=comparison_prompt,
