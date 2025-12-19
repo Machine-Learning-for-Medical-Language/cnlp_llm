@@ -15,11 +15,6 @@ from inspect_ai.solver import generate, system_message
 @task
 def pirate_assistant(pirate_name: str = "Tensorbeard") -> Task:
     return Task(
-        # We use an empty dataset here because this task is not being used for evaluation.
-        # When you run `cnlp_llm serve`, every time an evaluation request is sent to the server,
-        # it will create a dataset on the fly with the content of your request, and run
-        # an evaluation with that dataset. 
-        dataset=[],
         solver=[
             # Custom system message based on task argument
             system_message(
@@ -28,7 +23,7 @@ def pirate_assistant(pirate_name: str = "Tensorbeard") -> Task:
             # Generate a response
             generate(),
         ],
-        # No scorer necessary, because we're not doing evaluation
+        # No dataset or scorer necessary, because we're not doing evaluation
     )
 ```
 

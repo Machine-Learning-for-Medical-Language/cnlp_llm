@@ -7,28 +7,52 @@ import click
 logger = logging.getLogger(__name__)
 
 
-def _logger_init():
+def _create_log_file() -> str:
+    from ..console import console
+
     log_dir = os.environ.get("CNLP_CHAT_LOG_DIR")
     if log_dir is None:
         log_dir = os.path.join(os.getcwd(), "logs", "chat")
-        print(
+        console.print(
             f"Chat log dir not configured; using '{log_dir}'. Add 'CNLP_CHAT_LOG_DIR' to your .env to configure this option."
         )
     if not os.path.exists(log_dir):
-        mkdir = input(
+        mkdir = console.input(
             f"'{log_dir}' is not a valid directory. Would you like to create it? (y/[N]) "
         )
         if not mkdir.lower() == "y":
             raise FileNotFoundError(f"No such directory: '{log_dir}'")
         os.makedirs(log_dir)
-    log_file = os.path.join(log_dir, f"{datetime.now().isoformat()}.log")
-    handler = logging.FileHandler(log_file)
-    formatter = logging.Formatter(
-        fmt=" %(name)s :: %(asctime)s :: %(levelname)s :: %(message)s"
+    return os.path.join(log_dir, f"{datetime.now().isoformat()}.log")
+
+
+def _logger_init():
+    import transformers
+    from rich.logging import RichHandler
+
+    from ..console import console
+
+    rich_console_handler = RichHandler(
+        level=logging.WARNING,
+        console=console,
+        rich_tracebacks=True,
+        show_time=False,
     )
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+    rich_console_handler.setFormatter(logging.Formatter("%(name)s: %(message)s"))
+
+    log_file = _create_log_file()
+    file_handler = logging.FileHandler(log_file)
+    file_handler.setFormatter(
+        logging.Formatter(fmt="%(name)s :: %(asctime)s :: %(levelname)s :: %(message)s")
+    )
+
     logger.setLevel(logging.INFO)
+    logger.addHandler(rich_console_handler)
+    logger.addHandler(file_handler)
+
+    transformers.logging.disable_default_handler()
+    transformers.logging.add_handler(rich_console_handler)
+    transformers.logging.add_handler(file_handler)
 
 
 @click.command(
@@ -98,7 +122,9 @@ def chat(
     _logger_init()
 
     config = GenerateConfig(
-        system_message=system_message, max_tokens=max_tokens, temperature=temperature
+        system_message=system_message,
+        max_tokens=max_tokens,
+        temperature=temperature,
     )
 
     model_args = parse_cli_args(m)
