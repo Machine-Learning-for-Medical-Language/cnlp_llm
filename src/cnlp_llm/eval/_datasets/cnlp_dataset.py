@@ -139,7 +139,7 @@ def cnlp_file_dataset(
     encoding: str = "utf-8",
     name: str | None = None,
 ) -> Dataset:
-    root, ext = os.path.splitext(file_path)
+    _root, ext = os.path.splitext(file_path)
 
     dataset_kwargs = dict(
         task=task,

@@ -98,7 +98,7 @@ def completions(
         streamer = TextIteratorStreamer(tokenizer, skip_prompt=True)  # type: ignore
         inputs = tokenizer(prompt, return_tensors="pt").to(hf_model.device)
         thread = Thread(
-            target=hf_model.generate,
+            target=hf_model.generate,  # type: ignore
             kwargs=dict(inputs, streamer=streamer, **generation_kwargs),
         )
         thread.start()
