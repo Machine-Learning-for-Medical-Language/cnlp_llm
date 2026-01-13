@@ -52,8 +52,8 @@ def letter_prob_multiple_choice(model: str | Model | None = None) -> Solver:
             ChatMessageAssistant(content=f"ANSWER: {letter}") for letter in letters
         ]
 
-        choice_probs = await generator.compare_logprobs(
-            choice_messages, prepend=state.messages
+        choice_probs = await generator.get_choice_logprobs(
+            prefix=state.messages, choices=choice_messages
         )
 
         ranked = sorted(
