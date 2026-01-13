@@ -44,6 +44,12 @@ def _calculate_logprobs(
     attention_mask: torch.Tensor,
     first_token_logits: torch.Tensor | None = None,
 ) -> torch.Tensor:
+    """Calculate logprobs of inputs based on logits.
+    The attention mask is necessary to ignore padding.
+    Optionally include logits for generating the first token,
+    otherwise the first token will be ignored.
+    """
+
     if first_token_logits is not None:
         logits = torch.concat((first_token_logits.unsqueeze(1), logits), 1)
         input_ids = input_ids[..., None]
@@ -81,6 +87,11 @@ class BatchedLogprobsGenerator:
         prefix_messages: list[ChatMessage],
         choices_messages: list[list[ChatMessage]],
     ) -> tuple[BatchEncoding, BatchEncoding]:
+        """
+        Apply the chat template, tokenize the prefix, and
+        tokenize the choices as a single batch with right-padding.
+        """
+
         def _tokenize(text: str | list[str]) -> BatchEncoding:
             return self.tokenizer(
                 text,
@@ -109,6 +120,12 @@ class BatchedLogprobsGenerator:
     def _run_prefix(
         self, prefix_encoding: BatchEncoding
     ) -> tuple[torch.Tensor, Cache, torch.Tensor]:
+        """
+        Get logprobs, kv cache, and final logits for the prefix.
+        Final logits are necessary to get logprobs for the first token
+        when processing choices.
+        """
+
         with torch.inference_mode():
             out = self.model(
                 **prefix_encoding,
@@ -129,6 +146,8 @@ class BatchedLogprobsGenerator:
         prefix_cache: Cache,
         first_token_logits: torch.Tensor,
     ) -> torch.Tensor:
+        """Get logprobs for choices after a prefix."""
+
         input_ids = choices_encoding.input_ids
         attention_mask = choices_encoding.attention_mask
 
@@ -151,6 +170,8 @@ class BatchedLogprobsGenerator:
         return logprobs
 
     def _process(self):
+        """Continuously process jobs from the queue."""
+
         while True:
             # block until there's a job
             job = self.job_queue.get()
@@ -165,6 +186,8 @@ class BatchedLogprobsGenerator:
                 job.future.set_result(logprobs)
 
     async def _resolve_future(self, future: Future[_T]) -> _T:
+        """Asynchronously wait for a future to complete."""
+
         with trace_action(logger, "HF Logprobs Generator", "HF Logprobs Generator"):
             while True:
                 try:
@@ -178,6 +201,19 @@ class BatchedLogprobsGenerator:
         prefix: list[ChatMessage],
         choices: list[ChatMessage] | list[list[ChatMessage]],
     ) -> tuple[torch.Tensor, torch.Tensor]:
+        """Get token-level logprobs for a prefix and each continuation of that prefix.
+
+        Args:
+            prefix: A list of chat messages to prefix each choice.
+            choices: A list of chat messages or lists of chat messages, one for each choice.
+
+        Returns:
+            A tuple of `(prefix_logprobs, choices_logprobs)`, where `prefix_logprobs` is a
+            1-D Tensor of logprobs for each token in the prefix, and `choices_logprobs` is
+            a 2-D Tensor of logprobs with shape `(num_choices, max_choice_len)`, right-padded
+            with zeros for choices with shorter sequence lengths.
+        """
+
         if not isinstance(choices[0], list):
             choices = [[c] for c in choices]  # type: ignore
         choices = cast(list[list[ChatMessage]], choices)
@@ -207,5 +243,15 @@ class BatchedLogprobsGenerator:
         prefix: list[ChatMessage],
         choices: list[ChatMessage] | list[list[ChatMessage]],
     ) -> list[float]:
+        """Get sequence-level logprobs for each continuation of a prefix.
+
+        Args:
+            prefix: A list of chat messages to prefix each choice.
+            choices: A list of chat messages or lists of chat messages, one for each choice.
+
+        Returns:
+            A list of sequence-level logprobs, one for each choice.
+        """
+
         _, choice_logprobs = await self.get_choice_token_logprobs(prefix, choices)
         return choice_logprobs.sum(dim=-1).tolist()
