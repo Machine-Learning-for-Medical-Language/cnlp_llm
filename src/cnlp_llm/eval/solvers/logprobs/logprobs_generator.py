@@ -119,7 +119,7 @@ class BatchedLogprobsGenerator:
             prefix_encoding.input_ids,
             out.logits,
             prefix_encoding.attention_mask,
-        )
+        ).squeeze(0)
         final_logits = out.logits[:, -1, :]
         return logprobs, out.past_key_values, final_logits
 
