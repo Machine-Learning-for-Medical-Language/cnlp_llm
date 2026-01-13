@@ -32,6 +32,7 @@ class _ChoicesJob:
     encoding: BatchEncoding  # does not include the prefix!
     prefix_cache: Cache
     first_token_logits: torch.Tensor
+    prefix_attention_mask: torch.Tensor
     future: Future[torch.Tensor]
 
 
@@ -145,25 +146,28 @@ class BatchedLogprobsGenerator:
         choices_encoding: BatchEncoding,
         prefix_cache: Cache,
         first_token_logits: torch.Tensor,
+        prefix_attention_mask: torch.Tensor,
     ) -> torch.Tensor:
         """Get logprobs for choices after a prefix."""
 
         input_ids = choices_encoding.input_ids
-        attention_mask = choices_encoding.attention_mask
+        joined_attention_mask = torch.cat(
+            (prefix_attention_mask, choices_encoding.attention_mask),
+            dim=1,
+        )
 
         with torch.inference_mode():
             out = self.model(
                 input_ids=input_ids,
                 past_key_values=prefix_cache,
-                attention_mask=attention_mask,
-                use_cache=False,
+                attention_mask=joined_attention_mask,
                 return_dict=True,
             )
 
         logprobs = _calculate_logprobs(
             input_ids,
             out.logits,
-            attention_mask,
+            choices_encoding.attention_mask,
             first_token_logits=first_token_logits,
         )
 
@@ -181,7 +185,10 @@ class BatchedLogprobsGenerator:
             else:  # _ChoicesJob
                 # TODO smarter batching
                 logprobs = self._run_choices(
-                    job.encoding, job.prefix_cache, job.first_token_logits
+                    job.encoding,
+                    job.prefix_cache,
+                    job.first_token_logits,
+                    job.prefix_attention_mask,
                 )
                 job.future.set_result(logprobs)
 
@@ -226,12 +233,19 @@ class BatchedLogprobsGenerator:
             prefix_job.future
         )
 
-        # expand cache and first token logits to size of batch
+        # expand cache, first token logits, and prefix attention mask to size of batch
         prefix_cache.batch_repeat_interleave(len(choices))
         first_token_logits = prefix_final_logits.repeat_interleave(len(choices), 0)
+        prefix_attention_mask: torch.Tensor = (
+            prefix_encoding.attention_mask.repeat_interleave(len(choices), 0)
+        )
 
         choices_job = _ChoicesJob(
-            choices_encoding, prefix_cache, first_token_logits, Future()
+            choices_encoding,
+            prefix_cache,
+            first_token_logits,
+            prefix_attention_mask,
+            Future(),
         )
         self.job_queue.put(choices_job)
         choices_logprobs = await self._resolve_future(choices_job.future)
