@@ -34,7 +34,7 @@ def letter_prob_multiple_choice(model: str | Model | None = None) -> Solver:
     async def solve(state: TaskState, generate: Generate) -> TaskState:
         nonlocal generator
         if generator is None:
-            generator = BatchedLogprobsGenerator(get_model(model))
+            generator = BatchedLogprobsGenerator.from_model(get_model(model))
 
         if not state.choices:
             raise ValueError(

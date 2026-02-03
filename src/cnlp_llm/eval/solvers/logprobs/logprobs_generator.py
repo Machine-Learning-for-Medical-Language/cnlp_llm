@@ -1,4 +1,6 @@
 import logging
+import random
+from abc import ABC, abstractmethod
 from concurrent.futures import Future
 from dataclasses import dataclass
 from queue import Queue
@@ -9,6 +11,7 @@ import anyio
 import torch
 from inspect_ai.model import ChatMessage, Model
 from inspect_ai.model._providers.hf import HuggingFaceAPI
+from inspect_ai.model._providers.mockllm import MockLLM
 from inspect_ai.util import trace_action
 from transformers import Cache, PreTrainedTokenizer
 from transformers.tokenization_utils_base import BatchEncoding
@@ -65,12 +68,42 @@ def _calculate_logprobs(
     return logprobs * attention_mask
 
 
+class BatchedLogprobsGenerator(ABC):
+    @staticmethod
+    def from_model(model: Model) -> "BatchedLogprobsGenerator":
+        if isinstance(model.api, MockLLM):
+            return MockBatchedLogprobsGenerator()
+        elif isinstance(model.api, HuggingFaceAPI):
+            return HfBatchedLogprobsGenerator(model)
+        else:
+            raise ValueError(
+                "Only HuggingFace models and mockllm/model are supported for BatchedLogprobsGenerator"
+            )
+
+    @abstractmethod
+    async def get_choice_logprobs(
+        self,
+        prefix: list[ChatMessage],
+        choices: list[ChatMessage] | list[list[ChatMessage]],
+    ) -> list[float]: ...
+
+
 @final
-class BatchedLogprobsGenerator:
+class MockBatchedLogprobsGenerator(BatchedLogprobsGenerator):
+    async def get_choice_logprobs(
+        self,
+        prefix: list[ChatMessage],
+        choices: list[ChatMessage] | list[list[ChatMessage]],
+    ) -> list[float]:
+        return [-random.lognormvariate(0, 0.5) for _ in choices]
+
+
+@final
+class HfBatchedLogprobsGenerator(BatchedLogprobsGenerator):
     def __init__(self, model: Model):
         if not isinstance(model.api, HuggingFaceAPI):
             raise ValueError(
-                "Only HuggingFace models are supported for logprobs generation"
+                "Only HuggingFace models are supported for HfBatchedLogprobsGenerator"
             )
 
         self.inspect_model = model
