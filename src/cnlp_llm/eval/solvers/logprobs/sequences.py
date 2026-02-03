@@ -17,7 +17,7 @@ def seq_prob_multiple_choice(model: str | Model | None = None) -> Solver:
     async def solve(state: TaskState, generate: Generate) -> TaskState:
         nonlocal generator
         if generator is None:
-            generator = BatchedLogprobsGenerator(get_model(model))
+            generator = BatchedLogprobsGenerator.from_model(get_model(model))
 
         if not state.choices:
             raise ValueError(
@@ -28,8 +28,8 @@ def seq_prob_multiple_choice(model: str | Model | None = None) -> Solver:
             ChatMessageAssistant(content=choice.value) for choice in state.choices
         ]
 
-        choice_probs = await generator.compare_logprobs(
-            choice_messages, prepend=state.messages
+        choice_probs = await generator.get_choice_logprobs(
+            prefix=state.messages, choices=choice_messages
         )
 
         chosen, *rejected = [
