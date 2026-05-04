@@ -1,5 +1,6 @@
 import click
 
+from .annotation_calculator import annotation_calculator
 from .chat import chat
 from .completions import completions
 from .eval import eval
@@ -19,6 +20,7 @@ def cli(ctx: click.Context):
         init_dotenv()
 
 
+cli.add_command(annotation_calculator)
 cli.add_command(chat)
 cli.add_command(completions)
 cli.add_command(eval)
