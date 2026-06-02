@@ -58,15 +58,13 @@ useLibraryCodeForTypes = true
 
 [tool.uv.sources]
 cnlp-llm = { workspace = true }
+flash-attn = { index = "flash-attn-wheels" }
 
 [[tool.uv.index]]
 name = "flash-attn-wheels"
 url = "https://github.com/Dao-AILab/flash-attention/releases/expanded_assets/v2.8.3"
 format = "flat"
 explicit = true
-
-[tool.uv.sources]
-flash-attn = { index = "flash-attn-wheels" }
 
 [tool.uv]
 no-build-package = ["flash-attn"]
